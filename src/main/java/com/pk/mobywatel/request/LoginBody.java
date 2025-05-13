@@ -1,4 +1,4 @@
-package com.pk.mobywatel.body;
+package com.pk.mobywatel.request;
 
 public record LoginBody(String email, String password){
 }

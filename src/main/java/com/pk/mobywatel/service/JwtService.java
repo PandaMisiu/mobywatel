@@ -1,5 +1,6 @@
 package com.pk.mobywatel.service;
 
+import com.pk.mobywatel.model.UserModel;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -57,6 +58,7 @@ public class JwtService {
                 .signWith(getSignInKey())
                 .compact();
     }
+
 
     private SecretKey getSignInKey(){
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

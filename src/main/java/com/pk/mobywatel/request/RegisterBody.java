@@ -1,4 +1,4 @@
-package com.pk.mobywatel.body;
+package com.pk.mobywatel.request;
 
 import com.pk.mobywatel.util.Gender;
 

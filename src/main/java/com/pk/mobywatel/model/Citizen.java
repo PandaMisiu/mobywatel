@@ -32,7 +32,7 @@ public class Citizen {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(nullable = false)
+    @Column(unique = true,nullable = false)
     private String PESEL;
 
     @Column(nullable = false)

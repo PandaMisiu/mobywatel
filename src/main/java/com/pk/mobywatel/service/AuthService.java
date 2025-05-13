@@ -1,47 +1,87 @@
 package com.pk.mobywatel.service;
 
-import com.pk.mobywatel.body.LoginBody;
-import com.pk.mobywatel.body.RegisterBody;
-import com.pk.mobywatel.model.Citizen;
+import com.pk.mobywatel.request.LoginBody;
 import com.pk.mobywatel.model.UserModel;
-import com.pk.mobywatel.repository.UserModelRepository;
-import com.pk.mobywatel.repository.CitizenRepository;
-import com.pk.mobywatel.util.Role;
-import jakarta.transaction.Transactional;
+import com.pk.mobywatel.repository.UserRepository;
+import com.pk.mobywatel.response.AuthenticationResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    UserModelRepository userModelRepository;
-    CitizenRepository citizenRepository;
-    BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    @Transactional
-    public void register(RegisterBody body){
-        UserModel user = UserModel.builder()
-                .email(body.email())
-                .password(passwordEncoder.encode(body.password()))
-                .role(Role.CITIZEN)
-                .build();
 
-        Citizen citizen = Citizen.builder()
-                .firstName(body.firstName())
-                .lastName(body.lastName())
-                .PESEL(body.PESEL())
-                .user(user)
-                .birthDate(body.birthDate())
-                .gender(body.gender())
-                .build();
 
-        userModelRepository.save(user);
-        citizenRepository.save(citizen);
+    public AuthenticationResponse login(LoginBody request, HttpServletResponse response){
+        UserModel user = userRepository.findByEmail(request.email()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found"));
+        Authentication authentication = authenticationManager
+                .authenticate(
+                     new UsernamePasswordAuthenticationToken(
+                             request.email(),
+                             request.password()
+                     )
+                );
+        if(authentication.isAuthenticated()){
+            String token = jwtService.generateToken(user);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Cookie cookie = new Cookie("jwt", token);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+
+            response.addCookie(cookie);
+
+            return AuthenticationResponse.builder()
+                    .success(true)
+                    .message("Login Successful")
+                    .userID(user.getUserID())
+                    .build();
+        }
+        else {
+            throw new BadCredentialsException("Invalid username or password");
+        }
     }
 
-    public void login(LoginBody body){
+    public void validateToken(String token) {
+        String email = jwtService.extractUsername(token);
+        UserModel user = userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Email not found"));
 
+        boolean isValid = jwtService.isTokenValid(token, user);
+        if (!isValid) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        }
+    }
+
+    public String[] getRoles() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            List<String> roles = authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
+            return roles.toArray(new String[0]);
+        } else {
+            return new String[0];
+        }
     }
 }
