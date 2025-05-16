@@ -37,12 +37,12 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginBody request, HttpServletResponse response) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginBody request, HttpServletResponse response) throws BadRequestException {
         return ResponseEntity.ok(authService.login(request, response));
     }
 
     @PostMapping("/validate-token")
-    public ResponseEntity<ValidationResponse> validateTokenFromString(@RequestBody ValidationRequest request) {
+    public ResponseEntity<ValidationResponse> validateTokenFromString(@RequestBody ValidationRequest request) throws BadRequestException {
         String token = request.token();
 
         authService.validateToken(token);
@@ -60,10 +60,10 @@ public class AuthController {
     }
 
     @PostMapping("/validate-cookie")
-    public ResponseEntity<ValidationResponse> validateTokenFromCookie(HttpServletRequest request) {
+    public ResponseEntity<ValidationResponse> validateTokenFromCookie(HttpServletRequest request) throws BadRequestException {
             Cookie[] cookies = request.getCookies();
             Optional<String> jwtToken = Arrays.stream(cookies != null ? cookies : new Cookie[0])
-                    .filter(cookie -> "jwt".equals(cookie.getName()))
+                    .filter(cookie -> cookie != null && "jwt".equals(cookie.getName()))
                     .map(Cookie::getValue)
                     .findFirst();
 

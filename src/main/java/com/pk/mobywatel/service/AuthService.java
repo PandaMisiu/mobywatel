@@ -7,6 +7,7 @@ import com.pk.mobywatel.response.AuthenticationResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,7 +31,24 @@ public class AuthService {
 
 
 
-    public AuthenticationResponse login(LoginBody request, HttpServletResponse response){
+    public AuthenticationResponse login(LoginBody request, HttpServletResponse response) throws BadRequestException {
+        String email = request.email(),
+                password = request.password();
+
+        if (email == null || password == null){
+            throw new BadRequestException("Missing field.");
+        }
+
+        if (email.isBlank() || password.isBlank()) {
+            throw new BadRequestException("A field is blank.");
+        }
+
+        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+
+        if (!email.matches(emailRegex)) {
+            throw new BadRequestException("Incorrect email.");
+        }
+
         UserModel user = userRepository.findByEmail(request.email()).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found"));
         Authentication authentication = authenticationManager
                 .authenticate(
@@ -61,7 +79,11 @@ public class AuthService {
         }
     }
 
-    public void validateToken(String token) {
+    public void validateToken(String token) throws BadRequestException {
+        if (token == null || token.isEmpty()) {
+            throw new BadRequestException("Empty token.");
+        }
+
         String email = jwtService.extractUsername(token);
         UserModel user = userRepository.findByEmail(email).orElseThrow(()-> new UsernameNotFoundException("Email not found"));
 

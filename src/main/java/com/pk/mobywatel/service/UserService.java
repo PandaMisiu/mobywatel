@@ -23,9 +23,10 @@ public class UserService {
 
     @Transactional
     public void register(RegisterBody body) throws BadRequestException {
-
-        if(!validator.validateRegisterData(body)){
-            throw new BadRequestException("Invalid data");
+        try {
+            validator.validateRegisterData(body);
+        } catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
         }
 
         UserModel user = UserModel.builder()
