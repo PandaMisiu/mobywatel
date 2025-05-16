@@ -7,11 +7,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 @ControllerAdvice
@@ -40,6 +43,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<String> handleUsernameNotFoundException(UsernameNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email not found: " + e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: " + e.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<String> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized: " + e.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
