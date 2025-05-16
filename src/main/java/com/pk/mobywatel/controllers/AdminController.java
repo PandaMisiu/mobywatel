@@ -1,6 +1,7 @@
 package com.pk.mobywatel.controllers;
 
 import com.pk.mobywatel.model.Official;
+import com.pk.mobywatel.request.DeleteOfficialBody;
 import com.pk.mobywatel.request.OfficialBody;
 import com.pk.mobywatel.response.ApiResponse;
 import com.pk.mobywatel.service.AdminService;
@@ -19,18 +20,28 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @PostMapping("/create/official")
+    @GetMapping("/official")
+    public ResponseEntity<Official> createOfficialAccount(@RequestParam String officialID){
+        return ResponseEntity.ok(adminService.fetchOfficialAccount(officialID));
+    }
+
+    @PostMapping("/official")
     public ResponseEntity<ApiResponse> createOfficialAccount(@RequestBody OfficialBody body){
         adminService.createOfficialAccount(body);
         return ResponseEntity.ok(new ApiResponse(true, "Official account created"));
     }
 
-    @PutMapping("/update/official")
+    @PutMapping("/official")
     public ResponseEntity<ApiResponse> updateOfficialAccount(@RequestBody OfficialBody body){
         adminService.updateOfficialAccount(body);
         return ResponseEntity.ok(new ApiResponse(true, "Official account updated"));
     }
 
+    @DeleteMapping("/official")
+    public ResponseEntity<ApiResponse> deleteOfficialAccount(@RequestBody DeleteOfficialBody body){
+        adminService.deleteOfficialAccount(body);
+        return ResponseEntity.ok(new ApiResponse(true, "Official account deleted"));
+    }
 
     // TESTING
     @GetMapping("/officials")
