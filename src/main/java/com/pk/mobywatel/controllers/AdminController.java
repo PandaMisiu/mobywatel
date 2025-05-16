@@ -25,6 +25,11 @@ public class AdminController {
         return ResponseEntity.ok(new ApiResponse(true, "Official account created"));
     }
 
+    @PutMapping("/update/official")
+    public ResponseEntity<ApiResponse> updateOfficialAccount(@RequestBody OfficialBody body){
+        adminService.updateOfficialAccount(body);
+        return ResponseEntity.ok(new ApiResponse(true, "Official account updated"));
+    }
 
 
     // TESTING
