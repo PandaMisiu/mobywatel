@@ -1,6 +1,7 @@
 package com.pk.mobywatel.request;
 
-public record OfficialBody(String email,
+public record OfficialBody(Integer officialID,
+                           String email,
                            String password,
                            String firstName,
                            String lastName,

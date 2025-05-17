@@ -1,5 +1,6 @@
 package com.pk.mobywatel.service;
 
+import com.pk.mobywatel.request.OfficialBody;
 import com.pk.mobywatel.request.RegisterBody;
 import com.pk.mobywatel.model.Citizen;
 import com.pk.mobywatel.model.UserModel;
@@ -21,7 +22,30 @@ public class DataValidator {
     private final UserRepository userRepository;
     private final CitizenRepository citizenRepository;
 
-    public void validateRegisterData(RegisterBody body) throws BadRequestException {
+    // validator dla Usera nie zależnie czy Citizen, Official czy Admin
+    public void validateUserRegisterData(String email, String password) throws BadRequestException {
+        if(email == null || password == null) {
+            throw new BadRequestException("A field is null.");
+        }
+
+        if(email.isBlank() || password.isBlank()) {
+            throw new BadRequestException("A field is blank.");
+        }
+
+        if (!checkEmailRegex(email)) {
+            throw new BadRequestException("Incorrect email.");
+        }
+
+        if(!checkPasswordRegex(password)) {
+            throw new BadRequestException("Incorrect password.");
+        }
+
+        if(checkIfEmailIsTaken(email)) {
+            throw new BadRequestException("Email is taken.");
+        }
+    }
+
+    public void validateCitizenRegisterData(RegisterBody body) throws BadRequestException {
         String email = body.email(),
                 password = body.password(),
                 firstName = body.firstName(),
@@ -30,25 +54,18 @@ public class DataValidator {
         LocalDate birthDate = body.birthDate();
         Gender gender = body.gender();
 
-        if (email == null || password == null || firstName == null || lastName == null || PESEL == null || birthDate == null || gender == null) {
+        try{
+            validateUserRegisterData(email, password);
+        }catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        if (firstName == null || lastName == null || PESEL == null || birthDate == null || gender == null) {
             throw new BadRequestException("A field is null.");
         }
 
-        if (email.isBlank() || password.isBlank() || firstName.isBlank() || lastName.isBlank() || PESEL.isBlank()) {
+        if (firstName.isBlank() || lastName.isBlank() || PESEL.isBlank()) {
             throw new BadRequestException("A field is blank.");
-        }
-
-        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-
-        if (!email.matches(emailRegex)) {
-            throw new BadRequestException("Incorrect email.");
-        }
-
-        // min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
-        String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,40}$";
-
-        if (!password.matches(passwordRegex)) {
-            throw new BadRequestException("Incorrect password.");
         }
 
         GenderEnum peselGender;
@@ -58,15 +75,35 @@ public class DataValidator {
         if (!peselValidator.validate(PESEL, birthDate, peselGender)) {
             throw new BadRequestException("Invalid pesel.");
         }
-        if(checkIfEmailIsTaken(email)) {
-            throw new BadRequestException("Email is taken.");
-        }
+
         if(checkIfPESELIsTaken(PESEL)) {
             throw new BadRequestException("PESEL is taken.");
         }
 
         if (birthDate.isAfter(LocalDate.now())) {
             throw new BadRequestException("Birth date is after current date.");
+        }
+    }
+
+    public void validateOfficialRegisterData(OfficialBody body) throws BadRequestException {
+        String email = body.email(),
+                password = body.password(),
+                firstName = body.firstName(),
+                lastName = body.lastName(),
+                position = body.position();
+
+        try{
+            validateUserRegisterData(email, password);
+        }catch (BadRequestException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+
+        if (firstName == null || lastName == null || position == null) {
+            throw new BadRequestException("A field is null.");
+        }
+
+        if (firstName.isBlank() || lastName.isBlank() || position.isBlank()) {
+            throw new BadRequestException("A field is blank.");
         }
     }
 
@@ -78,6 +115,35 @@ public class DataValidator {
     public boolean checkIfPESELIsTaken(String PESEL){
         Citizen citizen = citizenRepository.findByPESEL(PESEL).orElse(null);
         return citizen != null;
+    }
+
+    public boolean checkEmailRegex(String email){
+        String emailRegex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+
+        if (!email.matches(emailRegex)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean checkPasswordRegex(String password){
+        // min 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char
+        String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,40}$";
+
+        if (!password.matches(passwordRegex)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateUpdateField(String field) throws BadRequestException {
+        //Jesli nie jest puste i nie składa się z białych znaków
+        if(field != null && !field.isBlank()){
+            return true;
+        }
+        return false;
     }
 
 }

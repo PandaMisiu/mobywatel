@@ -24,7 +24,7 @@ public class UserService {
     @Transactional
     public void register(RegisterBody body) throws BadRequestException {
         try {
-            validator.validateRegisterData(body);
+            validator.validateCitizenRegisterData(body);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
@@ -46,6 +46,22 @@ public class UserService {
 
         userRepository.save(user);
         citizenRepository.save(citizen);
+    }
+
+    @Transactional
+    public void registerAdmin(String email, String password) throws BadRequestException {
+        try{
+            validator.validateUserRegisterData(email, password);
+        }catch (BadRequestException e){
+            throw new BadRequestException(e.getMessage());
+        }
+        UserModel admin = UserModel.builder()
+                        .email(email)
+                        .password(passwordEncoder.encode(password))
+                        .role(Role.ADMIN)
+                        .build();
+
+        userRepository.save(admin);
     }
 
 
