@@ -138,12 +138,15 @@ public class DataValidator {
         return true;
     }
 
-    public boolean validateUpdateField(String field) throws BadRequestException {
-        //Jesli nie jest puste i nie składa się z białych znaków
-        if(field != null && !field.isBlank()){
-            return true;
+    public boolean validateUpdateField(Object field) throws BadRequestException {
+        if(field == null){
+            return false;
         }
-        return false;
+        if(field instanceof String && ((String) field).isBlank()){
+            return false;
+        }
+
+        return true;
     }
 
 }

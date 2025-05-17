@@ -1,7 +1,6 @@
 package com.pk.mobywatel.controllers;
 
 import com.pk.mobywatel.response.OfficialDto;
-import com.pk.mobywatel.model.Official;
 import com.pk.mobywatel.request.OfficialBody;
 import com.pk.mobywatel.response.ApiResponse;
 import com.pk.mobywatel.service.AdminService;
@@ -22,7 +21,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/official")
-    public ResponseEntity<OfficialDto> createOfficialAccount(@RequestParam Integer officialID) throws BadRequestException {
+    public ResponseEntity<OfficialDto> getOffcialByID(@RequestParam Integer officialID) throws BadRequestException {
         return ResponseEntity.ok(adminService.fetchOfficialAccount(officialID));
     }
 
@@ -49,4 +48,5 @@ public class AdminController {
     public ResponseEntity<List<OfficialDto>> getOfficials(){
         return ResponseEntity.ok(adminService.fetchOfficialsData());
     }
+
 }

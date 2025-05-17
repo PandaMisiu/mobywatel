@@ -10,7 +10,6 @@ import com.pk.mobywatel.util.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -71,6 +70,9 @@ public class AdminService {
 
     @Transactional
     public void updateOfficialAccount(OfficialBody body) throws BadRequestException {
+
+        if(body.officialID() == null) throw new BadRequestException("Official ID is required");
+
         String email = body.email(),
                 password = body.password(),
                 firstName = body.firstName(),
@@ -78,39 +80,26 @@ public class AdminService {
                 position = body.position();
 
         Official official = officialRepository.findById(body.officialID()).orElseThrow(() -> new BadRequestException("Official not found"));
-       UserModel user = official.getUser();
+        UserModel user = official.getUser();
 
         // Jeśli pole jest null lub składa sie z białych znaków to jest pomijane (nie wyrzuca błędu)
         if(validator.validateUpdateField(email)){
             if(validator.checkEmailRegex(email)){
-                if(validator.checkIfEmailIsTaken(email)) throw new BadRequestException("Email is taken");
+                if(!email.equals(user.getEmail()) && validator.checkIfEmailIsTaken(email)) throw new BadRequestException("Email is taken");
                 user.setEmail(email);
             }
-            else{
-                throw new BadRequestException("Invalid email");
-            }
+            else throw new BadRequestException("Invalid email");
         }
 
         if(validator.validateUpdateField(password)){
-            if(validator.checkPasswordRegex(password)){
-                user.setPassword(passwordEncoder.encode(password));
-            }
-            else{
-                throw new BadRequestException("Invalid password");
-            }
+            if(validator.checkPasswordRegex(password)) user.setPassword(passwordEncoder.encode(password));
+            else throw new BadRequestException("Invalid password");
+
         }
 
-        if(validator.validateUpdateField(firstName)){
-            official.setFirstName(firstName);
-        }
-
-        if(validator.validateUpdateField(lastName)){
-            official.setLastName(lastName);
-        }
-
-        if(validator.validateUpdateField(position)){
-            official.setPosition(position);
-        }
+        if(validator.validateUpdateField(firstName)) official.setFirstName(firstName);
+        if(validator.validateUpdateField(lastName)) official.setLastName(lastName);
+        if(validator.validateUpdateField(position)) official.setPosition(position);
 
         userRepository.save(user);
         officialRepository.save(official);
@@ -127,6 +116,5 @@ public class AdminService {
         
         return new OfficialDto(official.getOfficialID(), official.getFirstName(), official.getLastName(), official.getPosition(), official.getUser().getEmail());
     }
-
 
 }
