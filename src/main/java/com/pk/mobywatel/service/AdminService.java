@@ -83,6 +83,7 @@ public class AdminService {
         // Jeśli pole jest null lub składa sie z białych znaków to jest pomijane (nie wyrzuca błędu)
         if(validator.validateUpdateField(email)){
             if(validator.checkEmailRegex(email)){
+                if(validator.checkIfEmailIsTaken(email)) throw new BadRequestException("Email is taken");
                 user.setEmail(email);
             }
             else{
