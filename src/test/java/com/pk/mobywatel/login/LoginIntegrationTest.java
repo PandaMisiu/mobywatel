@@ -1,13 +1,11 @@
-package com.pk.mobywatel;
+package com.pk.mobywatel.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pk.mobywatel.request.LoginBody;
 import com.pk.mobywatel.request.RegisterBody;
 import com.pk.mobywatel.util.Gender;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;

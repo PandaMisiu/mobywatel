@@ -25,20 +25,20 @@ Ensure the following are installed
 3. **Add the `application.properties` and Oracle Database wallet into `src/main/resources` directory**
 
 4. **Build the project**
-  ```bash
-  mvn clean install # If you have Maven installed globally
-  or
-  .\mvnw.cmd clean install # If you don't have Maven installed globally
-  ```
+    ```bash
+    mvn clean install # If you have Maven installed globally
+    or
+    .\mvnw.cmd clean install # If you don't have Maven installed globally
+    ```
 
-  - This will build the project and run the tests
+- This will build the project and run the tests
 
 5. **Run with Docker**
 - Run the following command to build and start the containers:
   ```bash
   docker-compose up
   ```
-  
+
 - This will result in the server starting at port **8080**
 
 ## Endpoints
@@ -49,45 +49,45 @@ Ensure the following are installed
   - request body
     ```json
     {
-      "email": string,
-      "password": string
+      "email": "string",
+      "password": "string"
     }
     ```
-    
+
     - the password should have at least 8 characters including: lowercase, uppercase, number and symbol
-    
+
   - response body
     ```json
     {
-      "success": boolean,
-      "message": message,
-      "userID": int
+      "success": "boolean",
+      "message": "string",
+      "userID": "int"
     }
     ```
-    
+
     - On success adds a `jwt` cookie
 
 - POST `api/auth/register`
   - request body
     ```json
     {
-      "email": string,
-      "password": string,
-      "firstName": string,
-      "lastName": string,
-      "birthDate": string,
-      "PESEL": string,
-      "gender": string
+      "email": "string",
+      "password": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "birthDate": "string",
+      "PESEL": "string",
+      "gender": "string"
     }
     ```
-    
+
     - Format of birthdate is `YYYY-MM-DD`, and gender is uppercase ("MALE"/"FEMALE")
-    
+
   - response body
     ```json
     {
-      "success": boolean,
-      "message": message
+      "success": "boolean",
+      "message": "string"
     }
     ```
 
@@ -99,11 +99,11 @@ Ensure the following are installed
   - response body
     ```json
     {
-      "officialID": 1,
-      "firstName": string,
-      "lastName": string,
-      "position": string,
-      "email": string
+      "officialID": "int",
+      "firstName": "string",
+      "lastName": "string",
+      "position": "string",
+      "email": "string"
     }
     ```
 
@@ -111,22 +111,22 @@ Ensure the following are installed
   - request body
     ```json
     {
-      "officialID": int,
-      "email": string,
-      "password": string,
-      "firstName": string,
-      "lastName": string,
-      "position": string
+      "officialID": "int",
+      "email": "string",
+      "password": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "position": "string"
     }
     ```
-    
+
     - Creates an Official account
 
   - response body
     ```json
     {
-      "message": message,
-      "successful": boolean
+      "message": "string",
+      "successful": "boolean"
     }
     ```
 
@@ -135,30 +135,30 @@ Ensure the following are installed
   - request body
     ```json
     {
-      "officialID": int,
-      "email": string,
-      "password": string,
-      "firstName": string,
-      "lastName": string,
-      "position": string
+      "officialID": "int",
+      "email": "string",
+      "password": "string",
+      "firstName": "string",
+      "lastName": "string",
+      "position": "string"
     }
     ```
-    
+
   - response body
     ```json
     {
-      "message": message,
-      "successful": boolean
+      "message": "string",
+      "successful": "boolean"
     }
     ```
-    
+
 - DELETE `api/admin/official?officialID=int`
   - Deletes Official account with specific ID
   - Request has no JSON body
   - response body
     ```json
     {
-      "message": message,
-      "successful": boolean
+      "message": "string",
+      "successful": "boolean"
     }
     ```

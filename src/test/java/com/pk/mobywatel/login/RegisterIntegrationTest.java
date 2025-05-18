@@ -1,12 +1,15 @@
-package com.pk.mobywatel;
+package com.pk.mobywatel.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.pk.mobywatel.repository.CitizenRepository;
+import com.pk.mobywatel.repository.UserRepository;
 import com.pk.mobywatel.request.RegisterBody;
 import com.pk.mobywatel.util.Gender;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class RegisterIntegrationTest {
     @Autowired
     private MockMvc mvc;
@@ -29,17 +33,20 @@ public class RegisterIntegrationTest {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private CitizenRepository citizenRepository;
+
     private RegisterBody validBody;
 
     @BeforeEach
     public void setUp() throws Exception {
         validBody = new RegisterBody(
-            "test@gmail.com",
+            "test@gmail.pl",
             "Testpass123!",
             "Test",
             "Testowy",
-            LocalDate.of(1990, 5, 15),
-            "90051512340",
+            LocalDate.of(1990, 3, 15),
+            "90031512348",
             Gender.FEMALE
         );
     }
