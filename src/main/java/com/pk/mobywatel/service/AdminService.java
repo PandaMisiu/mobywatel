@@ -112,6 +112,10 @@ public class AdminService {
     }
 
     public OfficialDto fetchOfficialAccount(Integer officialID) throws BadRequestException {
+        if (officialID == null) {
+            throw new BadRequestException("Blank official ID");
+        }
+
         Official official = officialRepository.findById(officialID).orElseThrow(() ->new BadRequestException("Official not found"));
         
         return new OfficialDto(official.getOfficialID(), official.getFirstName(), official.getLastName(), official.getPosition(), official.getUser().getEmail());

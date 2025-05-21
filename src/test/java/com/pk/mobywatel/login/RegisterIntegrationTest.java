@@ -239,7 +239,7 @@ public class RegisterIntegrationTest {
                 "Nietest",
                 "Nietestnazwiska",
                 LocalDate.of(1990, 5, 15),
-                "90051512340",
+                "90051512348",
                 Gender.FEMALE
         );
 

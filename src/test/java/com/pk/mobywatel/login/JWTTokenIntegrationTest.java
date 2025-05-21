@@ -64,7 +64,6 @@ public class JWTTokenIntegrationTest {
                 .content(requestBody))
                 .andReturn();
 
-        // get token here: token = ...
         token = new ValidationRequest(result.getResponse().getCookie("jwt").getValue());
     }
 

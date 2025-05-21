@@ -142,11 +142,8 @@ public class DataValidator {
         if(field == null){
             return false;
         }
-        if(field instanceof String && ((String) field).isBlank()){
-            return false;
-        }
 
-        return true;
+        return !(field instanceof String) || !((String) field).isBlank();
     }
 
 }
