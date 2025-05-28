@@ -4,13 +4,16 @@ import com.pk.mobywatel.model.*;
 import com.pk.mobywatel.repository.CitizenRepository;
 import com.pk.mobywatel.repository.DocumentRepository;
 import com.pk.mobywatel.repository.PersonalDataUpdateRequestRepository;
+import com.pk.mobywatel.repository.UserRepository;
 import com.pk.mobywatel.request.CitizenBody;
+import com.pk.mobywatel.request.RegisterBody;
 import com.pk.mobywatel.response.DocumentDto;
 import com.pk.mobywatel.response.DriverLicenseDto;
 import com.pk.mobywatel.response.IdentityCardDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import pl.unak7.peselvalidator.PeselValidator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +25,8 @@ public class CitizenService {
     private final CitizenRepository citizenRepository;
     private final DocumentRepository documentRepository;
     private final PersonalDataUpdateRequestRepository personalDataUpdateRequestRepository;
+    private final UserRepository userRepository;
+    private final DataValidator validator;
 
     public List<DocumentDto> getCitizenDocuments(Integer citizenID) throws BadRequestException {
         var citizen = citizenRepository.findById(citizenID).orElseThrow(
