@@ -1,0 +1,42 @@
+package com.pk.mobywatel.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Entity
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Document {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer documentID;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "citizenID")
+    private Citizen citizen;
+
+    @Column(nullable = true)
+    private String photoURL;
+
+    @Column(nullable = false)
+    private LocalDate issueDate;
+
+    @Column(nullable = false)
+    private LocalDate expirationDate;
+
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @JoinColumn(name = "officialID")
+    private Official issueAuthority;
+
+    @Column(nullable = false)
+    private Boolean lost;
+}
