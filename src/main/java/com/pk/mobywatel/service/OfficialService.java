@@ -3,9 +3,11 @@ package com.pk.mobywatel.service;
 import com.pk.mobywatel.model.Citizen;
 import com.pk.mobywatel.model.UserModel;
 import com.pk.mobywatel.repository.CitizenRepository;
+import com.pk.mobywatel.repository.PersonalDataUpdateRequestRepository;
 import com.pk.mobywatel.repository.UserRepository;
 import com.pk.mobywatel.request.CitizenBody;
 import com.pk.mobywatel.response.CitizenDto;
+import com.pk.mobywatel.response.PersonaDataUpdateRequestDto;
 import com.pk.mobywatel.util.Gender;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.List;
 public class OfficialService {
 
     private final CitizenRepository citizenRepository;
+    private final PersonalDataUpdateRequestRepository personalDataUpdateRequestRepository;
     private final DataValidator validator;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -122,6 +125,22 @@ public class OfficialService {
                               citizen.getPESEL(),
                               citizen.getGender(),
                               citizen.getUser().getEmail());
+    }
+
+    public List<PersonaDataUpdateRequestDto> getUpdateRequests() {
+        return personalDataUpdateRequestRepository.findAll().stream()
+                .map(request -> new PersonaDataUpdateRequestDto(
+                        request.getRequestID(),
+                        request.getCitizen().getCitizenID(),
+                        request.getRequestedFirstName(),
+                        request.getRequestedLastName(),
+                        request.getRequestedBirthDate(),
+                        request.getRequestedGender(),
+                        request.getApproved(),
+                        request.getProcessed(),
+                        request.getRequestDate()
+                ))
+                .toList();
     }
 
 }

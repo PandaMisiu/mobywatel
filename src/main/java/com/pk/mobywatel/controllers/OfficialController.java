@@ -3,6 +3,7 @@ package com.pk.mobywatel.controllers;
 import com.pk.mobywatel.request.CitizenBody;
 import com.pk.mobywatel.response.ApiResponse;
 import com.pk.mobywatel.response.CitizenDto;
+import com.pk.mobywatel.response.PersonaDataUpdateRequestDto;
 import com.pk.mobywatel.service.OfficialService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -42,4 +43,8 @@ public class OfficialController {
         return ResponseEntity.ok(officialService.fetchCitizens());
     }
 
+    @GetMapping("/citizens/requests")
+    public ResponseEntity<List<PersonaDataUpdateRequestDto>> getUpdateRequests() {
+        return ResponseEntity.ok(officialService.getUpdateRequests());
+    }
 }

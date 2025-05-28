@@ -1,6 +1,5 @@
 package com.pk.mobywatel;
 
-import com.pk.mobywatel.repository.UserRepository;
 import com.pk.mobywatel.service.UserService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
