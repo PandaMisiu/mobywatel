@@ -21,7 +21,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/official")
-    public ResponseEntity<OfficialDto> getOffcialByID(@RequestParam Integer officialID) throws BadRequestException {
+    public ResponseEntity<OfficialDto> getOfficialByID(@RequestParam Integer officialID) throws BadRequestException {
         return ResponseEntity.ok(adminService.fetchOfficialAccount(officialID));
     }
 

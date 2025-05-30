@@ -1,6 +1,7 @@
 package com.pk.mobywatel.request;
 
 import com.pk.mobywatel.util.Gender;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDate;
 

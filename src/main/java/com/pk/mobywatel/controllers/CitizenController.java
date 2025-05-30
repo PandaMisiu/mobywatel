@@ -6,6 +6,7 @@ import com.pk.mobywatel.response.ApiResponse;
 import com.pk.mobywatel.response.DocumentDto;
 import com.pk.mobywatel.service.CitizenService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/citizen")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CitizenController {
     private final CitizenService citizenService;
 
