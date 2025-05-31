@@ -1,4 +1,4 @@
-# Mobywatel Web Frontend
+# mObywatel Web Frontend
 
 A minimal React application with React Router implementation using Vite and TypeScript.
 

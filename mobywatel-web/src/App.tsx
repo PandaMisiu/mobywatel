@@ -1,23 +1,29 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Container, Box } from '@mui/material';
 import { Navigation } from './components/organisms';
 import { Home, About, Contact, NotFound } from './components/pages';
-import './App.css';
 
 function App() {
   return (
     <Router>
-      <div className='app'>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+        }}
+      >
         <Navigation />
 
-        <main>
+        <Container component='main' sx={{ flexGrow: 1, py: 3 }}>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
-        </main>
-      </div>
+        </Container>
+      </Box>
     </Router>
   );
 }
