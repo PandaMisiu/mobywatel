@@ -1,6 +1,77 @@
-# React + TypeScript + Vite
+# Mobywatel Web Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and ESLint/Prettier configuration.
+A minimal React application with React Router implementation using Vite and TypeScript.
+
+## Features
+
+- ⚡ Vite for fast development and building
+- ⚛️ React 19 with TypeScript
+- 🛣️ React Router DOM for navigation
+- 🎨 Modern CSS with dark/light mode support
+- 📱 Atomic Design component structure
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── atoms/          # Basic building blocks
+│   ├── molecules/      # Simple components
+│   ├── organisms/      # Complex components
+│   │   └── Navigation.tsx
+│   ├── pages/          # Page components
+│   │   ├── Home.tsx
+│   │   ├── About.tsx
+│   │   ├── Contact.tsx
+│   │   ├── NotFound.tsx
+│   │   └── index.ts
+│   └── templates/      # Page layouts
+├── App.tsx
+├── App.css
+├── index.css
+└── main.tsx
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint issues
+- `npm run format` - Format code with Prettier
+
+## Routes
+
+- `/` - Home page
+- `/about` - About page
+- `/contact` - Contact page
+- `*` - 404 Not Found page
+
+## Getting Started
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Start development server:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Open [http://localhost:5174](http://localhost:5174) in your browser
+
+## Technologies Used
+
+- React 19
+- TypeScript
+- React Router DOM
+- Vite
+- ESLint
+- Prettier
 
 ## Development Scripts
 
@@ -21,12 +92,14 @@ This template provides a minimal setup to get React working in Vite with HMR and
 This project uses ESLint and Prettier for code quality and formatting:
 
 ### ESLint Configuration
+
 - TypeScript-specific rules for better type safety
 - React hooks rules for proper React development
 - Code quality rules to catch common issues
 - Integration with Prettier for consistent formatting
 
 ### Prettier Configuration
+
 - Single quotes for strings
 - Semicolons enabled
 - 2-space indentation
@@ -34,12 +107,15 @@ This project uses ESLint and Prettier for code quality and formatting:
 - Trailing commas where valid in ES5
 
 ### VS Code Integration
+
 The project includes VS Code settings for:
+
 - Auto-formatting on save
 - ESLint auto-fix on save
 - Proper file associations for TypeScript/React files
 
 ## Recommended VS Code Extensions
+
 - ESLint
 - Prettier - Code formatter
 - TypeScript and JavaScript Language Features
@@ -67,15 +143,15 @@ export default tseslint.config({
       tsconfigRootDir: import.meta.dirname,
     },
   },
-})
+});
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default tseslint.config({
   plugins: {
@@ -89,5 +165,5 @@ export default tseslint.config({
     ...reactX.configs['recommended-typescript'].rules,
     ...reactDom.configs.recommended.rules,
   },
-})
+});
 ```
