@@ -1,14 +1,8 @@
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  IconButton,
-} from '@mui/material';
+import { AppBar, Toolbar, Box, IconButton } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
+import { AppTypography, AppButton } from '../atoms';
 
 export default function Navigation() {
   const location = useLocation();
@@ -19,12 +13,13 @@ export default function Navigation() {
   return (
     <AppBar position='static'>
       <Toolbar>
-        <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
+        <AppTypography variant='h6' component='div' sx={{ flexGrow: 1 }}>
           mObywatel
-        </Typography>
+        </AppTypography>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-          <Button
+          <AppButton
             color='inherit'
+            variant='text'
             component={RouterLink}
             to='/'
             sx={{
@@ -34,9 +29,10 @@ export default function Navigation() {
             }}
           >
             Strona główna
-          </Button>
-          <Button
+          </AppButton>
+          <AppButton
             color='inherit'
+            variant='text'
             component={RouterLink}
             to='/about'
             sx={{
@@ -46,9 +42,10 @@ export default function Navigation() {
             }}
           >
             O nas
-          </Button>
-          <Button
+          </AppButton>
+          <AppButton
             color='inherit'
+            variant='text'
             component={RouterLink}
             to='/contact'
             sx={{
@@ -58,7 +55,7 @@ export default function Navigation() {
             }}
           >
             Kontakt
-          </Button>
+          </AppButton>
           <IconButton
             color='inherit'
             onClick={toggleDarkMode}
