@@ -1,4 +1,4 @@
-import type { SvgIconTypeMap } from '@mui/material';
+import type { SvgIconTypeMap, SxProps } from '@mui/material';
 import type { OverridableComponent } from '@mui/material/OverridableComponent';
 import { forwardRef } from 'react';
 
@@ -15,7 +15,7 @@ export interface AppIconProps {
     | 'info'
     | 'success'
     | 'warning';
-  sx?: object;
+  sx?: SxProps;
 }
 
 export const AppIcon = forwardRef<SVGSVGElement, AppIconProps>(

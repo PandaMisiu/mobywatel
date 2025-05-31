@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, type SxProps } from '@mui/material';
 import { AppTextField, AppButton } from '../atoms';
 import { Send } from '@mui/icons-material';
 import { useState } from 'react';
@@ -12,7 +12,7 @@ export interface ContactFormData {
 
 export interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
-  sx?: object;
+  sx?: SxProps;
 }
 
 export const ContactForm = ({ onSubmit, sx }: ContactFormProps) => {
