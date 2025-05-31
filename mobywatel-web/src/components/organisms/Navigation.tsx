@@ -1,8 +1,18 @@
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  IconButton,
+} from '@mui/material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function Navigation() {
   const location = useLocation();
+  const { isDarkMode, toggleDarkMode } = useTheme();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -12,7 +22,7 @@ export default function Navigation() {
         <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
           mObywatel
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <Button
             color='inherit'
             component={RouterLink}
@@ -49,6 +59,14 @@ export default function Navigation() {
           >
             Kontakt
           </Button>
+          <IconButton
+            color='inherit'
+            onClick={toggleDarkMode}
+            aria-label='toggle dark mode'
+            sx={{ ml: 1 }}
+          >
+            {isDarkMode ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
         </Box>
       </Toolbar>
     </AppBar>
