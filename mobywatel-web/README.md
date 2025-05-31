@@ -1,11 +1,50 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This template provides a minimal setup to get React working in Vite with HMR and ESLint/Prettier configuration.
 
-Currently, two official plugins are available:
+## Development Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm run dev` - Start the development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview the production build
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Run ESLint and fix auto-fixable issues
+- `npm run lint:check` - Run ESLint with zero warnings tolerance
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check if code is formatted correctly
+- `npm run format:all` - Format all files in the project
+- `npm run check` - Run both linting and format checks
+- `npm run fix` - Run both ESLint fix and Prettier formatting
+
+## Code Quality
+
+This project uses ESLint and Prettier for code quality and formatting:
+
+### ESLint Configuration
+- TypeScript-specific rules for better type safety
+- React hooks rules for proper React development
+- Code quality rules to catch common issues
+- Integration with Prettier for consistent formatting
+
+### Prettier Configuration
+- Single quotes for strings
+- Semicolons enabled
+- 2-space indentation
+- 80-character line length
+- Trailing commas where valid in ES5
+
+### VS Code Integration
+The project includes VS Code settings for:
+- Auto-formatting on save
+- ESLint auto-fix on save
+- Proper file associations for TypeScript/React files
+
+## Recommended VS Code Extensions
+- ESLint
+- Prettier - Code formatter
+- TypeScript and JavaScript Language Features
+- Auto Rename Tag
+- Path Intellisense
 
 ## Expanding the ESLint configuration
 
