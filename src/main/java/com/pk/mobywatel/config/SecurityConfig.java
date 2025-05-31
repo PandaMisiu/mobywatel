@@ -12,9 +12,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 
@@ -30,10 +27,17 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .cors(cors->cors.configurationSource(corsConfigurationSource()))
+ //               .cors(cors->cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**",
+                                         "/api-docs",
+                                         "/api-docs/**",
+                                         "/v3/api-docs/**",
+                                         "/swagger-ui/**",
+                                         "/swagger-ui.html",
+                                          "/swagger-resources/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session-> session
@@ -46,7 +50,7 @@ public class SecurityConfig {
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource() {
 //        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:9090","http://localhost:8082"));
+//        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
 //        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
 //        configuration.setAllowedHeaders(List.of("*"));
 //        configuration.setAllowCredentials(true);

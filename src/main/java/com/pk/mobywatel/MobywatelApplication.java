@@ -16,22 +16,22 @@ public class MobywatelApplication {
 
     }
 
-    @Value("${admin.email}")
-    private String adminEmail;
-
-    @Value("${admin.password}")
-    private String adminPassword;
-
-    @Bean
-    public CommandLineRunner commandLineRunner(UserService userService) throws BadRequestException {
-        return runner -> {
-            try{
-                userService.getUserIDFromEmail(adminEmail);
-                System.out.println("Admin account is already in database");
-            }catch (RuntimeException e){
-                userService.registerAdmin(adminEmail, adminPassword);
-                System.out.println("Admin created");
-            }
-        };
-    }
+//    @Value("${admin.email}")
+//    private String adminEmail;
+//
+//    @Value("${admin.password}")
+//    private String adminPassword;
+//
+//    @Bean
+//    public CommandLineRunner commandLineRunner(UserService userService) throws BadRequestException {
+//        return runner -> {
+//            try{
+//                userService.getUserIDFromEmail(adminEmail);
+//                System.out.println("Admin account is already in database");
+//            }catch (RuntimeException e){
+//                userService.registerAdmin(adminEmail, adminPassword);
+//                System.out.println("Admin created");
+//            }
+//        };
+//    }
 }
