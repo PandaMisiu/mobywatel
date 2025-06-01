@@ -31,23 +31,29 @@ public class CitizenService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    public List<DocumentDto> getCitizenDocuments(Integer citizenID) throws BadRequestException {
-//        UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
-//                .orElseThrow(() -> new BadRequestException("User not found"));
+    public List<DocumentDto> getCitizenDocuments(String token) throws BadRequestException {
+        UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
+                .orElseThrow(() -> new BadRequestException("User not found"));
 
-        var citizen = citizenRepository.findById(citizenID).orElseThrow(
+        var citizen = citizenRepository.findByUser(citizenUserModel).orElseThrow(
                 () -> new BadRequestException("Citizen not found")
         );
 
         return citizen.getDocuments().stream().map(this::mapToDto).toList();
     }
 
-    public void reportLostDocument(Integer citizenID, Integer documentID) throws BadRequestException {
+    public void reportLostDocument(Integer documentID, String token) throws BadRequestException {
         var document = documentRepository.findById(documentID).orElseThrow(
                 () -> new BadRequestException("Document not found")
         );
 
-        if(!document.getCitizen().getCitizenID().equals(citizenID)) {
+        UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        Citizen citizen = citizenRepository.findByUser(citizenUserModel)
+                .orElseThrow(() -> new BadRequestException("Citizen not found"));
+
+        if(!document.getCitizen().getCitizenID().equals(citizen.getCitizenID())) {
             throw new BadRequestException("Document does not belong to citizen");
         }
 
@@ -75,10 +81,13 @@ public class CitizenService {
         personalDataUpdateRequestRepository.save(request);
     }
 
-    public void requestDocumentIssue(DocumentIssueBody body) throws BadRequestException {
+    public void requestDocumentIssue(DocumentIssueBody body, String token) throws BadRequestException {
         validator.validateCitizenDocumentIssueData(body);
 
-        Citizen citizen = citizenRepository.findById(body.citizenID())
+        UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        Citizen citizen = citizenRepository.findByUser(citizenUserModel)
                 .orElseThrow(() -> new BadRequestException("Citizen not found"));
 
         if (body.requestedDocument() == RequestedDocument.IDENTITY_CARD) {

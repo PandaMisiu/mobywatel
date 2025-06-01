@@ -48,5 +48,4 @@ public class AdminController {
     public ResponseEntity<List<OfficialDto>> getOfficials(){
         return ResponseEntity.ok(adminService.fetchOfficialsData());
     }
-
 }

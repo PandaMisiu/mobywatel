@@ -20,19 +20,21 @@ public class CitizenController {
     private final CitizenService citizenService;
 
     @GetMapping("/docs")
-    public ResponseEntity<List<DocumentDto>> getCitizenDocuments(@RequestParam Integer citizenID) throws BadRequestException {
-        return ResponseEntity.ok(citizenService.getCitizenDocuments(citizenID));
+    public ResponseEntity<List<DocumentDto>> getCitizenDocuments(@CookieValue(name = "jwt") String token) throws BadRequestException {
+        return ResponseEntity.ok(citizenService.getCitizenDocuments(token));
     }
 
     @PostMapping("/docs/lost")
-    public ResponseEntity<ApiResponse> reportLostDocument(@RequestBody ReportBody body) throws BadRequestException {
-        citizenService.reportLostDocument(body.citizenID(), body.documentID());
+    public ResponseEntity<ApiResponse> reportLostDocument(@CookieValue(name = "jwt") String token,
+                                                          @RequestParam Integer documentID) throws BadRequestException {
+        citizenService.reportLostDocument(documentID, token);
         return ResponseEntity.ok(new ApiResponse(true, "Citizen lost document report sent"));
     }
 
     @PostMapping("/docs/request")
-    public ResponseEntity<ApiResponse> requestDocumentIssue(@RequestBody DocumentIssueBody body) throws BadRequestException {
-        citizenService.requestDocumentIssue(body);
+    public ResponseEntity<ApiResponse> requestDocumentIssue(@CookieValue(name = "jwt") String token,
+                                                            @RequestBody DocumentIssueBody body) throws BadRequestException {
+        citizenService.requestDocumentIssue(body, token);
         return ResponseEntity.ok(new ApiResponse(true, "Citizen document issue request report sent"));
     }
 

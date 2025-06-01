@@ -5,8 +5,7 @@ import com.pk.mobywatel.util.RequestedDocument;
 
 import java.util.List;
 
-public record DocumentIssueBody(Integer citizenID,
-                                RequestedDocument requestedDocument,
+public record DocumentIssueBody(RequestedDocument requestedDocument,
                                 String photoURl,
                                 String citizenship,
                                 List<LicenseCategory> licenseCategory) {

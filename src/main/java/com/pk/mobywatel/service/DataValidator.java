@@ -110,7 +110,7 @@ public class DataValidator {
     }
 
     public void validateCitizenDocumentIssueData(DocumentIssueBody body) throws BadRequestException {
-        if (body.citizenID() == null || body.requestedDocument() == null ||
+        if (body.requestedDocument() == null ||
             (body.requestedDocument() == RequestedDocument.DRIVER_LICENSE && body.licenseCategory() == null) ||
             (body.requestedDocument() == RequestedDocument.IDENTITY_CARD && body.citizenship() == null)) {
             throw new BadRequestException("A field is null.");
