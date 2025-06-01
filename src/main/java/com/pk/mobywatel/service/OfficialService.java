@@ -1,24 +1,25 @@
 package com.pk.mobywatel.service;
 
-import com.pk.mobywatel.model.Citizen;
-import com.pk.mobywatel.model.UserModel;
-import com.pk.mobywatel.repository.CitizenRepository;
-import com.pk.mobywatel.repository.PersonalDataUpdateRequestRepository;
-import com.pk.mobywatel.repository.UserRepository;
+import com.pk.mobywatel.model.*;
+import com.pk.mobywatel.repository.*;
 import com.pk.mobywatel.request.CitizenBody;
-import com.pk.mobywatel.response.CitizenDto;
-import com.pk.mobywatel.response.PersonaDataUpdateRequestDto;
+import com.pk.mobywatel.request.DocumentIssueBody;
+import com.pk.mobywatel.request.ProcessDocumentIssueBody;
+import com.pk.mobywatel.request.ProcessPersonalDataUpdateBody;
+import com.pk.mobywatel.response.*;
 import com.pk.mobywatel.util.Gender;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.unak7.peselvalidator.GenderEnum;
 import pl.unak7.peselvalidator.PeselValidator;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,10 @@ public class OfficialService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final PeselValidator peselValidator;
+    private final DocumentIssueRequestRepository documentIssueRequestRepository;
+    private final DocumentRepository documentRepository;
+    private final JwtService jwtService;
+    private final OfficialRepository officialRepository;
 
     @Transactional
     public void updateCitizenAccount(CitizenBody body) throws BadRequestException {
@@ -118,29 +123,149 @@ public class OfficialService {
     public CitizenDto fetchCitizenAccount(Integer officialID) throws BadRequestException {
         Citizen citizen = citizenRepository.findById(officialID).orElseThrow(() ->new BadRequestException("Citizen not found"));
 
-        return new CitizenDto(citizen.getCitizenID(),
-                              citizen.getFirstName(),
-                              citizen.getLastName(),
-                              citizen.getBirthDate(),
-                              citizen.getPESEL(),
-                              citizen.getGender(),
-                              citizen.getUser().getEmail());
+        return new CitizenDto(
+                citizen.getCitizenID(),
+                citizen.getFirstName(),
+                citizen.getLastName(),
+                citizen.getBirthDate(),
+                citizen.getPESEL(),
+                citizen.getGender(),
+                citizen.getUser().getEmail());
+    }
+
+    public CitizenDto fetchCitizenAccount(String PESEL) throws BadRequestException {
+        validator.validatePESEL(PESEL);
+
+        Citizen citizen = citizenRepository.findByPESEL(PESEL).orElseThrow(() ->new BadRequestException("Citizen not found"));
+
+        return new CitizenDto(
+                citizen.getCitizenID(),
+                citizen.getFirstName(),
+                citizen.getLastName(),
+                citizen.getBirthDate(),
+                citizen.getPESEL(),
+                citizen.getGender(),
+                citizen.getUser().getEmail());
     }
 
     public List<PersonaDataUpdateRequestDto> getUpdateRequests() {
         return personalDataUpdateRequestRepository.findAll().stream()
-                .map(request -> new PersonaDataUpdateRequestDto(
-                        request.getRequestID(),
-                        request.getCitizen().getCitizenID(),
-                        request.getRequestedFirstName(),
-                        request.getRequestedLastName(),
-                        request.getRequestedBirthDate(),
-                        request.getRequestedGender(),
-                        request.getApproved(),
-                        request.getProcessed(),
-                        request.getRequestDate()
-                ))
+                .map(request -> {
+                    if (!request.getProcessed())
+                        return new PersonaDataUpdateRequestDto(
+                                request.getRequestID(),
+                                request.getCitizen().getCitizenID(),
+                                request.getRequestedFirstName(),
+                                request.getRequestedLastName(),
+                                request.getRequestedGender(),
+                                request.getApproved(),
+                                false,
+                                request.getRequestDate()
+                        );
+                    else
+                        return null;
+                })
+                .filter(Objects::nonNull)
                 .toList();
     }
 
+    public void personalDataUpdate(ProcessPersonalDataUpdateBody body) throws BadRequestException {
+        PersonalDataUpdateRequest personalDataUpdateRequest = personalDataUpdateRequestRepository.findById(body.requestID())
+                .orElseThrow(() -> new BadRequestException("Personal data update request not found."));
+
+        if (personalDataUpdateRequest.getProcessed().equals(true)) {
+            throw new BadRequestException("Personal data update has already been processed.");
+        }
+
+        if (body.approval()) {
+            Citizen citizen = citizenRepository.findById(personalDataUpdateRequest.getCitizen().getCitizenID())
+                    .orElseThrow(() -> new BadRequestException("Citizen not found"));
+
+            citizen.setFirstName(personalDataUpdateRequest.getRequestedFirstName());
+            citizen.setLastName(personalDataUpdateRequest.getRequestedLastName());
+            citizen.setGender(personalDataUpdateRequest.getRequestedGender());
+
+            citizenRepository.save(citizen);
+        }
+
+        personalDataUpdateRequestRepository.updatePersonalDataRequest(body.requestID(), body.approval());
+    }
+
+    public List<DocumentIssueRequestDto> getDocumentIssueRequests() {
+        return documentIssueRequestRepository.findAll().stream()
+                .map(request -> {
+                    if (!request.getProcessed())
+                        return mapToDto(request);
+                    else
+                        return null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+
+    private DocumentIssueRequestDto mapToDto(DocumentIssueRequest documentIssueRequest) {
+        if (documentIssueRequest instanceof DriverLicenseIssueRequest dl) {
+            return DriverLicenseIssueDto.builder()
+                    .requestID(dl.getRequestID())
+                    .citizenID(dl.getCitizen().getCitizenID())
+                    .photoURL(dl.getPhotoURL())
+                    .categories(dl.getCategories())
+                    .build();
+        } else if (documentIssueRequest instanceof IdentityCardIssueRequest ic) {
+            return IdentityCardIssueDto.builder()
+                    .requestID(ic.getRequestID())
+                    .photoURL(ic.getPhotoURL())
+                    .citizenID(ic.getCitizen().getCitizenID())
+                    .citizenship(ic.getCitizenship())
+                    .build();
+        } else {
+            throw new IllegalArgumentException("Unknown document issue type: " + documentIssueRequest.getClass());
+        }
+    }
+
+    public void documentIssueRequest(ProcessDocumentIssueBody body, String token) throws BadRequestException {
+        DocumentIssueRequest documentIssueRequest = documentIssueRequestRepository.findById(body.requestID())
+                .orElseThrow(() -> new BadRequestException("Personal data update request not found."));
+
+        if (documentIssueRequest.getProcessed().equals(true)) {
+            throw new BadRequestException("Personal data update has already been processed.");
+        }
+
+        if (body.approval()) {
+            UserModel officialUser = userRepository.findByEmail(jwtService.extractUsername(token))
+                    .orElseThrow(() -> new BadRequestException("Official user not found."));
+
+            Official official = officialRepository.findByUser(officialUser)
+                    .orElseThrow(() -> new BadRequestException("Official not found."));
+
+            if (documentIssueRequest instanceof IdentityCardIssueRequest) {
+                IdentityCard identityCard = IdentityCard.builder()
+                        .citizen(documentIssueRequest.getCitizen())
+                        .photoURL(documentIssueRequest.getPhotoURL())
+                        .issueDate(LocalDate.now())
+                        .expirationDate(body.expirationDate())
+                        .issueAuthority(official)
+                        .lost(false)
+                        .citizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship())
+                        .build();
+
+                documentRepository.save(identityCard);
+            } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
+                DriverLicense identityCard = DriverLicense.builder()
+                        .citizen(documentIssueRequest.getCitizen())
+                        .photoURL(documentIssueRequest.getPhotoURL())
+                        .issueDate(LocalDate.now())
+                        .expirationDate(body.expirationDate())
+                        .issueAuthority(official)
+                        .lost(false)
+                        .categories(((DriverLicenseIssueRequest) documentIssueRequest).getCategories())
+                        .build();
+
+                documentRepository.save(identityCard);
+            }
+        }
+
+        documentIssueRequestRepository.documentIssueRequestUpdate(body.requestID(), body.approval());
+    }
 }

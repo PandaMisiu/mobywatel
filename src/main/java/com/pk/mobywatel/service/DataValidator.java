@@ -1,5 +1,6 @@
 package com.pk.mobywatel.service;
 
+import com.pk.mobywatel.request.DocumentIssueBody;
 import com.pk.mobywatel.request.OfficialBody;
 import com.pk.mobywatel.request.RegisterBody;
 import com.pk.mobywatel.model.Citizen;
@@ -7,6 +8,7 @@ import com.pk.mobywatel.model.UserModel;
 import com.pk.mobywatel.repository.CitizenRepository;
 import com.pk.mobywatel.repository.UserRepository;
 import com.pk.mobywatel.util.Gender;
+import com.pk.mobywatel.util.RequestedDocument;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
@@ -107,6 +109,14 @@ public class DataValidator {
         }
     }
 
+    public void validateCitizenDocumentIssueData(DocumentIssueBody body) throws BadRequestException {
+        if (body.citizenID() == null || body.requestedDocument() == null ||
+            (body.requestedDocument() == RequestedDocument.DRIVER_LICENSE && body.licenseCategory() == null) ||
+            (body.requestedDocument() == RequestedDocument.IDENTITY_CARD && body.citizenship() == null)) {
+            throw new BadRequestException("A field is null.");
+        }
+    }
+
     public boolean checkIfEmailIsTaken(String email){
         UserModel user = userRepository.findByEmail(email).orElse(null);
         return user != null;
@@ -146,4 +156,11 @@ public class DataValidator {
         return !(field instanceof String) || !((String) field).isBlank();
     }
 
+    public void validatePESEL(String PESEL) throws BadRequestException {
+        if (PESEL == null || PESEL.isEmpty()) {
+            throw new BadRequestException("A field is null.");
+        } else if (PESEL.length() != 11) {
+            throw new BadRequestException("Pesel must be 11 characters.");
+        }
+    }
 }

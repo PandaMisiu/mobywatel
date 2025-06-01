@@ -1,7 +1,6 @@
 package com.pk.mobywatel.controllers;
 
-import com.pk.mobywatel.request.CitizenBody;
-import com.pk.mobywatel.request.ReportBody;
+import com.pk.mobywatel.request.*;
 import com.pk.mobywatel.response.ApiResponse;
 import com.pk.mobywatel.response.DocumentDto;
 import com.pk.mobywatel.service.CitizenService;
@@ -31,9 +30,16 @@ public class CitizenController {
         return ResponseEntity.ok(new ApiResponse(true, "Citizen lost document report sent"));
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<ApiResponse> requestUpdate(@RequestBody CitizenBody body) throws BadRequestException {
-        citizenService.requestUpdatePersonalData(body);
+    @PostMapping("/docs/request")
+    public ResponseEntity<ApiResponse> requestDocumentIssue(@RequestBody DocumentIssueBody body) throws BadRequestException {
+        citizenService.requestDocumentIssue(body);
+        return ResponseEntity.ok(new ApiResponse(true, "Citizen document issue request report sent"));
+    }
+
+    @PostMapping("/personalData/request")
+    public ResponseEntity<ApiResponse> requestUpdate(@CookieValue(name = "jwt") String token,
+                                                     @RequestBody PersonalDataUpdateBody body) throws BadRequestException {
+        citizenService.requestUpdatePersonalData(body, token);
         return ResponseEntity.ok(new ApiResponse(true, "Citizen personal data update request sent"));
     }
 }

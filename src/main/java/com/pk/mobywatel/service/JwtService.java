@@ -59,7 +59,6 @@ public class JwtService {
                 .compact();
     }
 
-
     private SecretKey getSignInKey(){
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }

@@ -1,21 +1,19 @@
 package com.pk.mobywatel.model;
 
-import com.pk.mobywatel.util.Gender;
+import com.pk.mobywatel.util.LicenseCategory;
+import com.pk.mobywatel.util.RequestedDocument;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonalDataUpdateRequest {
-
+public class DocumentIssueRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer requestID;
@@ -25,20 +23,11 @@ public class PersonalDataUpdateRequest {
     private Citizen citizen;
 
     @Column(nullable = false)
-    private String requestedFirstName;
+    private Boolean processed;
 
-    @Column(nullable = false)
-    private String requestedLastName;
-
-    @Enumerated(EnumType.STRING)
-    private Gender requestedGender;
+    @Column(nullable = true)
+    private String photoURL;
 
     @Column(nullable = false)
     private Boolean approved;
-
-    @Column(nullable = false)
-    private Boolean processed;
-
-    @Column(nullable = false)
-    private LocalDate requestDate;
 }

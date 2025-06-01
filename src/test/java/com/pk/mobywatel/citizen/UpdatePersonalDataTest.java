@@ -123,7 +123,7 @@ public class UpdatePersonalDataTest {
     void validUpdatePersonalDataTest() throws Exception {
         String requestBody = mapper.writeValueAsString(validBody);
 
-        mvc.perform(post("/api/citizen/update")
+        mvc.perform(post("/api/citizen/personalData/request")
                         .cookie(new Cookie("jwt", token))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
@@ -139,7 +139,7 @@ public class UpdatePersonalDataTest {
 //
 //        String modifiedRequestBody = mapper.writeValueAsString(jsonNode);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(modifiedRequestBody))
 //                .andExpect(status().isBadRequest());
@@ -160,7 +160,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());
@@ -181,7 +181,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());
@@ -202,7 +202,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());
@@ -223,7 +223,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());
@@ -244,7 +244,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());
@@ -265,7 +265,7 @@ public class UpdatePersonalDataTest {
 //
 //        String requestBody = mapper.writeValueAsString(invalidBody);
 //
-//        mvc.perform(post("/api/citizen/update")
+//        mvc.perform(post("/api/citizen/personalData/request")
 //                        .contentType(MediaType.APPLICATION_JSON)
 //                        .content(requestBody))
 //                .andExpect(status().isBadRequest());

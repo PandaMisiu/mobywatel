@@ -2,7 +2,9 @@ package com.pk.mobywatel.model;
 
 import com.pk.mobywatel.util.LicenseCategory;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
 @Setter
 @SuperBuilder
 @NoArgsConstructor
-public class DriverLicense extends Document {
+public class DriverLicenseIssueRequest extends DocumentIssueRequest {
     @ElementCollection(targetClass = LicenseCategory.class)
     @CollectionTable(
             name = "driver_license_categories",
