@@ -32,7 +32,7 @@ public class OfficialController {
         else if (PESEL != null && citizenID == null)
             return ResponseEntity.ok(officialService.fetchCitizenAccount(PESEL));
         else
-            throw new BadRequestException("Required 1 argument, received 2");
+            throw new BadRequestException("Required 1 parameter, received 2");
     }
 
     @PutMapping("/citizen")
@@ -52,7 +52,7 @@ public class OfficialController {
         return ResponseEntity.ok(officialService.fetchCitizens());
     }
 
-    @GetMapping("/citizens/personalData/requests")
+    @GetMapping("/citizen/personalData/requests")
     public ResponseEntity<List<PersonaDataUpdateRequestDto>> getUpdateRequests() {
         return ResponseEntity.ok(officialService.getUpdateRequests());
     }

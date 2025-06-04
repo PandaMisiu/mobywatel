@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/citizen")
 @RequiredArgsConstructor
+@Secured({"ROLE_CITIZEN", "ROLE_ADMIN"})
 public class CitizenController {
     private final CitizenService citizenService;
 

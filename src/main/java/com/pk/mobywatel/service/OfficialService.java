@@ -181,9 +181,9 @@ public class OfficialService {
             Citizen citizen = citizenRepository.findById(personalDataUpdateRequest.getCitizen().getCitizenID())
                     .orElseThrow(() -> new BadRequestException("Citizen not found"));
 
-            citizen.setFirstName(personalDataUpdateRequest.getRequestedFirstName());
-            citizen.setLastName(personalDataUpdateRequest.getRequestedLastName());
-            citizen.setGender(personalDataUpdateRequest.getRequestedGender());
+            citizen.setFirstName((personalDataUpdateRequest.getRequestedFirstName()) != null ? personalDataUpdateRequest.getRequestedFirstName() : citizen.getFirstName());
+            citizen.setLastName((personalDataUpdateRequest.getRequestedLastName()) != null ? personalDataUpdateRequest.getRequestedLastName() : citizen.getLastName());
+            citizen.setGender((personalDataUpdateRequest.getRequestedGender()) != null ? personalDataUpdateRequest.getRequestedGender() : citizen.getGender());
 
             citizenRepository.save(citizen);
         }
