@@ -1,10 +1,17 @@
-import { Box, Alert, Grid, MenuItem, type SxProps } from '@mui/material';
+import {
+  Box,
+  Alert,
+  Grid,
+  MenuItem,
+  type SxProps,
+  type Theme,
+} from '@mui/material';
 import { AppTextField, AppButton } from '../atoms';
 import { PersonAdd } from '@mui/icons-material';
 import { useForm } from '../../hooks/useForm';
 import { parseBackendError } from '../../utils/errorUtils';
 
-export interface RegisterFormData {
+export interface RegisterFormData extends Record<string, unknown> {
   email: string;
   password: string;
   firstName: string;
@@ -18,7 +25,7 @@ export interface RegisterFormProps {
   onSubmit: (data: RegisterFormData) => Promise<void>;
   loading?: boolean;
   error?: string;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 }
 
 const genderOptions = [

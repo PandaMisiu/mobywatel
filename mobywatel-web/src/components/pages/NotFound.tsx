@@ -1,6 +1,7 @@
 import { Link as RouterLink } from 'react-router-dom';
-import { Typography, Button, Box, Card, CardContent } from '@mui/material';
+import { Box, Card, CardContent } from '@mui/material';
 import { HomeOutlined, ErrorOutline } from '@mui/icons-material';
+import { AppTypography, AppButton } from '../atoms';
 
 export default function NotFound() {
   return (
@@ -21,16 +22,16 @@ export default function NotFound() {
               mb: 2,
             }}
           />
-          <Typography variant='h2' component='h1' gutterBottom color='error'>
+          <AppTypography variant='h2' component='h1' gutterBottom color='error'>
             404
-          </Typography>
-          <Typography variant='h5' component='h2' gutterBottom>
-            Page Not Found
-          </Typography>
-          <Typography variant='body1' color='text.secondary' sx={{ mb: 2 }}>
-            The page you are looking for does not exist or has been moved.
-          </Typography>
-          <Button
+          </AppTypography>
+          <AppTypography variant='h5' component='h2' gutterBottom>
+            Strona nie została znaleziona
+          </AppTypography>
+          <AppTypography variant='body1' color='text.secondary' sx={{ mb: 3 }}>
+            Strona, której szukasz, nie istnieje lub została przeniesiona.
+          </AppTypography>
+          <AppButton
             variant='contained'
             component={RouterLink}
             to='/'
@@ -38,8 +39,8 @@ export default function NotFound() {
             size='large'
             sx={{ mt: 2 }}
           >
-            Go back to Home
-          </Button>
+            Powrót do strony głównej
+          </AppButton>
         </CardContent>
       </Card>
     </Box>

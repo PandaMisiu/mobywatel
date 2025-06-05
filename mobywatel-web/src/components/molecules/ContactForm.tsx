@@ -1,10 +1,10 @@
-import { Box, type SxProps, Alert } from '@mui/material';
+import { Box, type SxProps, Alert, type Theme } from '@mui/material';
 import { AppTextField, AppButton } from '../atoms';
 import { Send } from '@mui/icons-material';
 import { useForm } from '../../hooks/useForm';
 import { parseBackendError } from '../../utils/errorUtils';
 
-export interface ContactFormData {
+export interface ContactFormData extends Record<string, unknown> {
   name: string;
   email: string;
   subject: string;
@@ -13,7 +13,7 @@ export interface ContactFormData {
 
 export interface ContactFormProps {
   onSubmit: (data: ContactFormData) => Promise<void>;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 }
 
 export const ContactForm = ({ onSubmit, sx }: ContactFormProps) => {

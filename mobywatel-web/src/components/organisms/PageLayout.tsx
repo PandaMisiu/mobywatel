@@ -1,11 +1,12 @@
 import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import { AppTypography } from '../atoms';
 
 export interface PageLayoutProps {
   title?: string;
   subtitle?: string;
   children: React.ReactNode;
-  sx?: object;
+  sx?: SxProps<Theme>;
 }
 
 export const PageLayout = ({

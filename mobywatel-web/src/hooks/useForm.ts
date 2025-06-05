@@ -1,20 +1,24 @@
 import { useState, useCallback } from 'react';
 import type { FormError } from '../utils/errorUtils';
-import { validateFormField, logError } from '../utils/errorUtils';
+import {
+  validateFormField,
+  logError,
+  handleApiError,
+} from '../utils/errorUtils';
 
-export interface UseFormOptions<T> {
+export interface UseFormOptions<T extends Record<string, unknown>> {
   initialValues: T;
   requiredFields?: (keyof T)[];
   onSubmit: (data: T) => Promise<void>;
   validateOnChange?: boolean;
 }
 
-export interface UseFormResult<T> {
+export interface UseFormResult<T extends Record<string, unknown>> {
   values: T;
   errors: Record<keyof T, string>;
   isSubmitting: boolean;
   generalError: string;
-  handleChange: (name: keyof T, value: any) => void;
+  handleChange: (name: keyof T, value: unknown) => void;
   handleSubmit: (event: React.FormEvent) => Promise<void>;
   setError: (field: keyof T | 'general', message: string) => void;
   clearErrors: () => void;
@@ -26,7 +30,7 @@ export interface UseFormResult<T> {
 /**
  * Enhanced form hook with error handling and validation
  */
-export function useForm<T extends Record<string, any>>({
+export function useForm<T extends Record<string, unknown>>({
   initialValues,
   requiredFields = [],
   onSubmit,
@@ -40,7 +44,7 @@ export function useForm<T extends Record<string, any>>({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleChange = useCallback(
-    (name: keyof T, value: any) => {
+    (name: keyof T, value: unknown) => {
       setValues((prev) => ({ ...prev, [name]: value }));
 
       // Clear existing error for this field
@@ -147,7 +151,11 @@ export function useForm<T extends Record<string, any>>({
       } catch (error) {
         // Error should be handled by the onSubmit function
         // This is just a fallback
-        console.error('Unexpected error in form submission:', error);
+        logError({
+          type: 'form_error',
+          message: 'Unexpected error in form submission',
+          context: { error: (error as Error)?.message },
+        });
         setGeneralError('Wystąpił nieoczekiwany błąd');
       } finally {
         setIsSubmitting(false);
@@ -182,11 +190,11 @@ export function useForm<T extends Record<string, any>>({
 /**
  * Hook for API form submissions with enhanced error handling
  */
-export function useApiForm<T extends Record<string, any>>(
+export function useApiForm<T extends Record<string, unknown>>(
   options: UseFormOptions<T> & {
     apiEndpoint: string;
     method?: 'POST' | 'PUT' | 'PATCH';
-    onSuccess?: (response: any) => void;
+    onSuccess?: (response: unknown) => void;
     onError?: (error: FormError) => void;
   }
 ) {
@@ -210,7 +218,6 @@ export function useApiForm<T extends Record<string, any>>(
       });
 
       if (!response.ok) {
-        const { handleApiError } = await import('../utils/errorUtils');
         const error = await handleApiError(response);
 
         if (onError) {

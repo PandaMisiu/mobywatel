@@ -261,7 +261,11 @@ export function logError(error: ErrorLogEntry): void {
     const trimmedErrors = storedErrors.slice(0, 50);
     localStorage.setItem('errorLogs', JSON.stringify(trimmedErrors));
   } catch (e) {
-    console.warn('Failed to store error log in localStorage:', e);
+    // In development, log to console for debugging
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to store error log in localStorage:', e);
+    }
   }
 
   // In production, you could send errors to a logging service like Sentry
@@ -285,7 +289,11 @@ export async function handleApiError(response: Response): Promise<FormError> {
       errorMessage = (await response.text()) || errorMessage;
     }
   } catch (e) {
-    console.warn('Failed to parse error response:', e);
+    // In development, log to console for debugging
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to parse error response:', e);
+    }
   }
 
   // Log the API error
@@ -328,7 +336,11 @@ export function getErrorLogs(): ErrorLogEntry[] {
   try {
     return JSON.parse(localStorage.getItem('errorLogs') || '[]');
   } catch (e) {
-    console.warn('Failed to retrieve error logs:', e);
+    // In development, log to console for debugging
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to retrieve error logs:', e);
+    }
     return [];
   }
 }
@@ -340,7 +352,11 @@ export function clearErrorLogs(): void {
   try {
     localStorage.removeItem('errorLogs');
   } catch (e) {
-    console.warn('Failed to clear error logs:', e);
+    // In development, log to console for debugging
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn('Failed to clear error logs:', e);
+    }
   }
 }
 
