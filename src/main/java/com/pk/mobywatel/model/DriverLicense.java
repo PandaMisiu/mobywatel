@@ -20,5 +20,6 @@ public class DriverLicense extends Document {
             joinColumns = @JoinColumn(name = "driver_license_id")
     )
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private List<LicenseCategory> categories = new ArrayList<>();
 }

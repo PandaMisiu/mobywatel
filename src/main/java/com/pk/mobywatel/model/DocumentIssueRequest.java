@@ -13,6 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class DocumentIssueRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

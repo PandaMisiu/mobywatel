@@ -18,7 +18,7 @@ import java.util.List;
 public class DriverLicenseIssueRequest extends DocumentIssueRequest {
     @ElementCollection(targetClass = LicenseCategory.class)
     @CollectionTable(
-            name = "driver_license_categories",
+            name = "driver_license_request_categories",
             joinColumns = @JoinColumn(name = "driver_license_id")
     )
     @Enumerated(EnumType.STRING)

@@ -21,7 +21,7 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer documentID;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "citizenID")
     private Citizen citizen;
 
@@ -34,7 +34,7 @@ public class Document {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "officialID")
     private Official issueAuthority;
 
