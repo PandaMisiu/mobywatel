@@ -1,4 +1,5 @@
 import { Paper } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import { AppTypography, AppButton } from '../atoms';
 
 export interface HeroSectionProps {
@@ -6,7 +7,7 @@ export interface HeroSectionProps {
   subtitle: string;
   buttonText: string;
   onButtonClick?: () => void;
-  sx?: object;
+  sx?: SxProps<Theme>;
 }
 
 export const HeroSection = ({

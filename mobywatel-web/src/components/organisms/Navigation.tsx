@@ -13,9 +13,28 @@ export default function Navigation() {
   return (
     <AppBar position='static'>
       <Toolbar>
-        <AppTypography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-          mObywatel
-        </AppTypography>
+        <Box sx={{ flexGrow: 1 }}>
+          <RouterLink
+            to='/'
+            style={{
+              textDecoration: 'none',
+              color: 'inherit',
+            }}
+          >
+            <AppTypography
+              variant='h6'
+              sx={{
+                cursor: 'pointer',
+                display: 'inline-block',
+                '&:hover': {
+                  opacity: 0.8,
+                },
+              }}
+            >
+              mObywatel
+            </AppTypography>
+          </RouterLink>
+        </Box>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
           <AppButton
             color='inherit'
@@ -55,6 +74,32 @@ export default function Navigation() {
             }}
           >
             Kontakt
+          </AppButton>
+          <AppButton
+            color='inherit'
+            variant='text'
+            component={RouterLink}
+            to='/login'
+            sx={{
+              backgroundColor: isActive('/login')
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'transparent',
+            }}
+          >
+            Logowanie
+          </AppButton>
+          <AppButton
+            color='inherit'
+            variant='text'
+            component={RouterLink}
+            to='/register'
+            sx={{
+              backgroundColor: isActive('/register')
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'transparent',
+            }}
+          >
+            Rejestracja
           </AppButton>
           <IconButton
             color='inherit'

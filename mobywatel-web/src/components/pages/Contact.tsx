@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Grid,
   Card,
@@ -6,17 +7,50 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Alert,
 } from '@mui/material';
 import { Email, Phone, LocationOn, AccessTime } from '@mui/icons-material';
 import { PageLayout } from '../organisms';
 import { ContactForm } from '../molecules';
 import type { ContactFormData } from '../molecules';
 import { AppTypography, AppAvatar } from '../atoms';
+import { logError } from '../../utils/errorUtils';
 
 export default function Contact() {
-  const handleSubmit = (data: ContactFormData) => {
-    // Handle form submission
-    alert(`Wiadomość od ${data.name} została wysłana!`);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (data: ContactFormData): Promise<void> => {
+    try {
+      // In a real application, this would send data to your backend
+      // For now, we'll simulate an async operation
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      setSuccess(true);
+
+      // Log successful submission
+      logError({
+        type: 'form_error',
+        message: 'Contact form submitted successfully',
+        context: {
+          name: data.name,
+          email: data.email,
+          subject: data.subject,
+        },
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (error) {
+      logError({
+        type: 'form_error',
+        message: 'Failed to submit contact form',
+        context: {
+          error: (error as Error)?.message,
+          formData: data,
+        },
+      });
+      throw error;
+    }
   };
 
   return (
@@ -24,6 +58,12 @@ export default function Contact() {
       title='Kontakt'
       subtitle='Jesteśmy tutaj, aby pomóc! Skontaktuj się z nami, jeśli potrzebujesz wsparcia, masz pytania lub uwagi.'
     >
+      {success && (
+        <Alert severity='success' sx={{ mb: 3 }}>
+          Wiadomość została wysłana pomyślnie! Odpowiemy tak szybko, jak to
+          możliwe.
+        </Alert>
+      )}
       <Grid container spacing={4} sx={{ mt: 2 }}>
         <Grid size={{ xs: 12, md: 8 }}>
           <Card>

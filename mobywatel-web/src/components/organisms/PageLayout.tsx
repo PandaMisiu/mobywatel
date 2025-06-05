@@ -1,11 +1,12 @@
 import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import { AppTypography } from '../atoms';
 
 export interface PageLayoutProps {
   title?: string;
   subtitle?: string;
   children: React.ReactNode;
-  sx?: object;
+  sx?: SxProps<Theme>;
 }
 
 export const PageLayout = ({
@@ -17,12 +18,22 @@ export const PageLayout = ({
   return (
     <Box sx={sx}>
       {title && (
-        <AppTypography variant='h3' component='h1' gutterBottom>
+        <AppTypography
+          variant='h3'
+          component='h1'
+          gutterBottom
+          textAlign='center'
+        >
           {title}
         </AppTypography>
       )}
       {subtitle && (
-        <AppTypography variant='h6' color='text.secondary' sx={{ mb: 2 }}>
+        <AppTypography
+          variant='h6'
+          color='text.secondary'
+          textAlign='center'
+          sx={{ mb: 4 }}
+        >
           {subtitle}
         </AppTypography>
       )}
