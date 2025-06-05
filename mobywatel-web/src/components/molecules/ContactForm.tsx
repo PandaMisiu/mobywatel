@@ -1,7 +1,8 @@
-import { Box, type SxProps } from '@mui/material';
+import { Box, type SxProps, Alert } from '@mui/material';
 import { AppTextField, AppButton } from '../atoms';
 import { Send } from '@mui/icons-material';
-import { useState } from 'react';
+import { useForm } from '../../hooks/useForm';
+import { parseBackendError } from '../../utils/errorUtils';
 
 export interface ContactFormData {
   name: string;
@@ -11,53 +12,77 @@ export interface ContactFormData {
 }
 
 export interface ContactFormProps {
-  onSubmit: (data: ContactFormData) => void;
+  onSubmit: (data: ContactFormData) => Promise<void>;
   sx?: SxProps;
 }
 
 export const ContactForm = ({ onSubmit, sx }: ContactFormProps) => {
-  const [formData, setFormData] = useState<ContactFormData>({
-    name: '',
-    email: '',
-    subject: '',
-    message: '',
+  const {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+    generalError,
+    setError,
+    isSubmitting,
+  } = useForm<ContactFormData>({
+    initialValues: {
+      name: '',
+      email: '',
+      subject: '',
+      message: '',
+    },
+    requiredFields: ['name', 'email', 'subject', 'message'],
+    onSubmit: async (data) => {
+      try {
+        await onSubmit(data);
+      } catch (err) {
+        const parsed = parseBackendError((err as Error)?.message || '');
+        if (parsed.field) {
+          setError(parsed.field as keyof ContactFormData, parsed.message);
+        } else {
+          setError('general', parsed.message);
+        }
+      }
+    },
   });
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    onSubmit(formData);
-  };
 
   return (
     <Box component='form' onSubmit={handleSubmit} sx={sx}>
+      {generalError && (
+        <Box sx={{ mb: 2 }}>
+          <Alert severity='error'>{generalError}</Alert>
+        </Box>
+      )}
       <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
         <AppTextField
           name='name'
           label='Imię i nazwisko'
-          value={formData.name}
-          onChange={handleInputChange}
+          value={values.name}
+          onChange={(e) => handleChange('name', e.target.value)}
           required
+          error={!!errors.name}
+          helperText={errors.name}
         />
         <AppTextField
           name='email'
           label='Email'
           type='email'
-          value={formData.email}
-          onChange={handleInputChange}
+          value={values.email}
+          onChange={(e) => handleChange('email', e.target.value)}
           required
+          error={!!errors.email}
+          helperText={errors.email}
         />
       </Box>
       <AppTextField
         name='subject'
         label='Temat'
-        value={formData.subject}
-        onChange={handleInputChange}
+        value={values.subject}
+        onChange={(e) => handleChange('subject', e.target.value)}
         required
+        error={!!errors.subject}
+        helperText={errors.subject}
         sx={{ mb: 2 }}
       />
       <AppTextField
@@ -65,9 +90,11 @@ export const ContactForm = ({ onSubmit, sx }: ContactFormProps) => {
         label='Wiadomość'
         multiline
         rows={4}
-        value={formData.message}
-        onChange={handleInputChange}
+        value={values.message}
+        onChange={(e) => handleChange('message', e.target.value)}
         required
+        error={!!errors.message}
+        helperText={errors.message}
         sx={{ mb: 3 }}
       />
       <AppButton
@@ -75,6 +102,7 @@ export const ContactForm = ({ onSubmit, sx }: ContactFormProps) => {
         variant='contained'
         startIcon={<Send />}
         size='large'
+        disabled={isSubmitting}
       >
         Wyślij wiadomość
       </AppButton>

@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import {
   HomeOutlined,
   SecurityOutlined,
@@ -30,8 +31,10 @@ const features: Feature[] = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const handleGetStarted = () => {
-    // Handle navigation to services
+    navigate('/register');
   };
 
   return (

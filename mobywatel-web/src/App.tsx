@@ -1,7 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Container, Box } from '@mui/material';
 import { Navigation } from './components/organisms';
-import { Home, About, Contact, NotFound } from './components/pages';
+import {
+  Home,
+  About,
+  Contact,
+  Login,
+  Register,
+  NotFound,
+} from './components/pages';
 
 function App() {
   return (
@@ -20,6 +27,8 @@ function App() {
             <Route path='/' element={<Home />} />
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </Container>
