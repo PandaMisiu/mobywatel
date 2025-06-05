@@ -9,7 +9,6 @@ import {
 import { AppTextField, AppButton } from '../atoms';
 import { PersonAdd } from '@mui/icons-material';
 import { useForm } from '../../hooks/useForm';
-import { parseBackendError } from '../../utils/errorUtils';
 
 export interface RegisterFormData extends Record<string, unknown> {
   email: string;
@@ -45,7 +44,6 @@ export const RegisterForm = ({
     handleChange,
     handleSubmit,
     generalError,
-    setError,
     isSubmitting,
   } = useForm<RegisterFormData>({
     initialValues: {
@@ -67,16 +65,7 @@ export const RegisterForm = ({
       'gender',
     ],
     onSubmit: async (data) => {
-      try {
-        await onSubmit(data);
-      } catch (err) {
-        const parsed = parseBackendError((err as Error)?.message || '');
-        if (parsed.field) {
-          setError(parsed.field as keyof RegisterFormData, parsed.message);
-        } else {
-          setError('general', parsed.message);
-        }
-      }
+      await onSubmit(data);
     },
   });
 

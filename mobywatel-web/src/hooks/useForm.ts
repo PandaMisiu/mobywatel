@@ -23,6 +23,7 @@ export interface UseFormResult<T extends Record<string, unknown>> {
   setError: (field: keyof T | 'general', message: string) => void;
   clearErrors: () => void;
   setFieldError: (field: keyof T, message: string) => void;
+  resetForm: () => void;
   hasErrors: boolean;
   isValid: boolean;
 }
@@ -172,6 +173,12 @@ export function useForm<T extends Record<string, unknown>>({
       return value && (typeof value !== 'string' || value.trim() !== '');
     });
 
+  const resetForm = useCallback(() => {
+    setValues(initialValues);
+    setErrors({} as Record<keyof T, string>);
+    setGeneralError('');
+  }, [initialValues]);
+
   return {
     values,
     errors,
@@ -182,6 +189,7 @@ export function useForm<T extends Record<string, unknown>>({
     setError,
     clearErrors,
     setFieldError,
+    resetForm,
     hasErrors,
     isValid,
   };

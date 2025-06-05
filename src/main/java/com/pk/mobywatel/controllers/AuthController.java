@@ -50,11 +50,12 @@ public class AuthController {
         // username w kontekscie jwt, w tym przypadku email
         String email = jwtService.extractUsername(token);
         int userID = userService.getUserIDFromEmail(email);
+        String[] roles = userService.getUserRolesFromEmail(email);
         return ResponseEntity.ok(ValidationResponse.builder()
                 .valid(true)
                 .email(email)
                 .userID(userID)
-                .roles(authService.getRoles())
+                .roles(roles)
                 .message("Validation successful")
                 .build());
     }
@@ -82,12 +83,13 @@ public class AuthController {
 
             String email = jwtService.extractUsername(jwtToken.get());
             int userID = userService.getUserIDFromEmail(email);
+            String[] roles = userService.getUserRolesFromEmail(email);
 
             return ResponseEntity.ok(ValidationResponse.builder()
                     .valid(true)
                     .email(jwtService.extractUsername(jwtToken.get()))
                     .userID(userID)
-                    .roles(authService.getRoles())
+                    .roles(roles)
                     .message("Validation successful")
                     .build());
     }
