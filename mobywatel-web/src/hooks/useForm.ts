@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { FormError } from '../utils/errorUtils';
 import {
   validateFormField,
@@ -43,6 +43,16 @@ export function useForm<T extends Record<string, unknown>>({
   );
   const [generalError, setGeneralError] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // Update values when initialValues change (for cases like editing different entities)
+  // Use deep comparison to prevent unnecessary re-renders when object content is the same
+  const stableInitialValues = React.useMemo(() => {
+    return initialValues;
+  }, [JSON.stringify(initialValues)]);
+
+  React.useEffect(() => {
+    setValues(stableInitialValues);
+  }, [stableInitialValues]);
 
   const handleChange = useCallback(
     (name: keyof T, value: unknown) => {
@@ -174,10 +184,10 @@ export function useForm<T extends Record<string, unknown>>({
     });
 
   const resetForm = useCallback(() => {
-    setValues(initialValues);
+    setValues(stableInitialValues);
     setErrors({} as Record<keyof T, string>);
     setGeneralError('');
-  }, [initialValues]);
+  }, [stableInitialValues]);
 
   return {
     values,

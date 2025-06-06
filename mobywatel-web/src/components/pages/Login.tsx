@@ -17,7 +17,15 @@ export default function Login() {
   // Redirect if already logged in and auth check is complete
   useEffect(() => {
     if (user && !isLoading && user.roles && user.roles.length > 0) {
-      navigate('/dashboard');
+      // Redirect based on user role
+      if (user.roles.includes('ROLE_OFFICIAL')) {
+        navigate('/official-dashboard');
+      } else if (user.roles.includes('ROLE_CITIZEN')) {
+        navigate('/dashboard');
+      } else {
+        // Fallback for unknown roles
+        navigate('/dashboard');
+      }
     }
   }, [user, isLoading, navigate]);
 

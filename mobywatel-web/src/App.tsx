@@ -4,7 +4,7 @@ import { Suspense, lazy } from 'react';
 import { Navigation, ErrorBoundary } from './components/organisms';
 import { AppTypography, SkipNavigation } from './components/atoms';
 import { AuthProvider } from './contexts/AuthContext';
-import { CitizenRoute } from './components/ProtectedRoute';
+import { CitizenRoute, OfficialRoute } from './components/ProtectedRoute';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./components/pages/Home'));
@@ -14,6 +14,9 @@ const Login = lazy(() => import('./components/pages/Login'));
 const Register = lazy(() => import('./components/pages/Register'));
 const CitizenDashboard = lazy(
   () => import('./components/pages/CitizenDashboard')
+);
+const OfficialDashboard = lazy(
+  () => import('./components/pages/OfficialDashboard')
 );
 const NotFound = lazy(() => import('./components/pages/NotFound'));
 
@@ -68,6 +71,14 @@ function App() {
                         <CitizenRoute>
                           <CitizenDashboard />
                         </CitizenRoute>
+                      }
+                    />
+                    <Route
+                      path='/official-dashboard'
+                      element={
+                        <OfficialRoute>
+                          <OfficialDashboard />
+                        </OfficialRoute>
                       }
                     />
                     <Route path='*' element={<NotFound />} />

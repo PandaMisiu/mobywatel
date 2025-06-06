@@ -102,19 +102,36 @@ export default function Navigation() {
 
           {user ? (
             <>
-              <AppButton
-                color='inherit'
-                variant='text'
-                component={RouterLink}
-                to='/dashboard'
-                sx={{
-                  backgroundColor: isActive('/dashboard')
-                    ? 'rgba(255, 255, 255, 0.1)'
-                    : 'transparent',
-                }}
-              >
-                Panel obywatela
-              </AppButton>
+              {user.roles?.includes('ROLE_CITIZEN') && (
+                <AppButton
+                  color='inherit'
+                  variant='text'
+                  component={RouterLink}
+                  to='/dashboard'
+                  sx={{
+                    backgroundColor: isActive('/dashboard')
+                      ? 'rgba(255, 255, 255, 0.1)'
+                      : 'transparent',
+                  }}
+                >
+                  Panel obywatela
+                </AppButton>
+              )}
+              {user.roles?.includes('ROLE_OFFICIAL') && (
+                <AppButton
+                  color='inherit'
+                  variant='text'
+                  component={RouterLink}
+                  to='/official-dashboard'
+                  sx={{
+                    backgroundColor: isActive('/official-dashboard')
+                      ? 'rgba(255, 255, 255, 0.1)'
+                      : 'transparent',
+                  }}
+                >
+                  Panel urzędnika
+                </AppButton>
+              )}
               <IconButton
                 color='inherit'
                 onClick={handleMenuOpen}
