@@ -41,6 +41,15 @@ public class Citizen {
     private Gender gender;
 
     @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Document> documents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<PersonalDataUpdateRequest> personalDataUpdateRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DocumentIssueRequest> documentIssueRequests = new ArrayList<>();
 }
 

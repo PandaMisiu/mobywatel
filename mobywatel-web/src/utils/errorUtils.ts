@@ -49,6 +49,17 @@ export function parseBackendError(errorMessage: string): FormError {
       message: 'Niepoprawny numer PESEL',
     },
     {
+      pattern:
+        /(bad request.*the birth date and gender must match.*pesel|the birth date and gender must match.*pesel)/i,
+      field: 'PESEL',
+      message: 'Data urodzenia i płeć muszą odpowiadać numerowi PESEL',
+    },
+    {
+      pattern: /(bad request.*citizen id is required|citizen id is required)/i,
+      field: 'citizenID',
+      message: 'ID obywatela jest wymagane',
+    },
+    {
       pattern: /(bad request.*field is null|field is null)/i,
       message: 'Wszystkie pola są wymagane',
     },
