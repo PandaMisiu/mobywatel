@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @Builder
@@ -31,4 +34,7 @@ public class Official {
     @Column(nullable = false)
     private String position;
 
+    @OneToMany(mappedBy = "issueAuthority", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Document> documents = new ArrayList<>();
 }
