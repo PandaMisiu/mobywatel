@@ -324,7 +324,10 @@ export function OfficialDashboard() {
 
       showNotification('Konto obywatela zostało usunięte', 'success');
       loadCitizens(searchCriteria);
+      loadPersonalDataRequests();
+      loadDocumentRequests();
       loadDashboardStats();
+      setDeleteConfirmModal({ open: false, citizen: null });
     } catch (error) {
       const parsed = parseBackendError((error as Error)?.message || '');
       showNotification(parsed.message, 'error');
