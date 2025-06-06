@@ -2,7 +2,6 @@ import { Box, Alert, type SxProps, type Theme } from '@mui/material';
 import { AppTextField, AppButton } from '../atoms';
 import { Login } from '@mui/icons-material';
 import { useForm } from '../../hooks/useForm';
-import { parseBackendError } from '../../utils/errorUtils';
 
 export interface LoginFormData extends Record<string, unknown> {
   email: string;
@@ -28,23 +27,12 @@ export const LoginForm = ({
     handleChange,
     handleSubmit,
     generalError,
-    setError,
     isSubmitting,
   } = useForm<LoginFormData>({
     initialValues: { email: '', password: '' },
     requiredFields: ['email', 'password'],
     onSubmit: async (data) => {
-      try {
-        await onSubmit(data);
-      } catch (err) {
-        // Parse backend error and set field/general error
-        const parsed = parseBackendError((err as Error)?.message || '');
-        if (parsed.field) {
-          setError(parsed.field as keyof LoginFormData, parsed.message);
-        } else {
-          setError('general', parsed.message);
-        }
-      }
+      await onSubmit(data);
     },
   });
 

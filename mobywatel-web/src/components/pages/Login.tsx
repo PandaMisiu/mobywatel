@@ -1,95 +1,55 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Card, CardContent, Box, Divider } from '@mui/material';
 import { PageLayout } from '../organisms';
 import { LoginForm } from '../molecules';
 import type { LoginFormData } from '../molecules/LoginForm';
 import { AppTypography, AppButton } from '../atoms';
-import { API_BASE_URL } from '../../config/api';
-import { parseBackendError, logError } from '../../utils/errorUtils';
+import { useAuth } from '../../hooks/useAuth';
+import { parseBackendError } from '../../utils/errorUtils';
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const { login, user, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect if already logged in and auth check is complete
+  useEffect(() => {
+    if (user && !isLoading && user.roles && user.roles.length > 0) {
+      navigate('/dashboard');
+    }
+  }, [user, isLoading, navigate]);
 
   const handleLogin = async (data: LoginFormData) => {
     setLoading(true);
     setError('');
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Important for cookies
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        // Success response - should be JSON
-        const result = await response.json();
-        if (result.success) {
-          // Login successful, redirect to home or dashboard
-          navigate('/');
-        } else {
-          setError(result.message || 'Błąd podczas logowania');
-        }
-      } else {
-        // Error response - could be JSON or plain text
-        let errorMessage = 'Błąd podczas logowania';
-
-        // Clone the response to be able to read it twice
-        const responseClone = response.clone();
-
-        try {
-          // Try to parse as JSON first
-          const result = await response.json();
-          errorMessage = result.message || errorMessage;
-        } catch {
-          // If JSON parsing fails, treat as plain text using the cloned response
-          try {
-            const textResponse = await responseClone.text();
-            if (textResponse) {
-              // Backend returns "Bad request: actual_error_message", extract the actual message
-              if (textResponse.startsWith('Bad request: ')) {
-                errorMessage = textResponse.replace('Bad request: ', '');
-              } else {
-                errorMessage = textResponse;
-              }
-            }
-          } catch (textError) {
-            // If both JSON and text parsing fail, use default message
-            logError({
-              type: 'api_error',
-              message: 'Failed to parse error response',
-              context: { textError },
-            });
-          }
-        }
-
-        setError(parseBackendError(errorMessage).message);
-        logError({
-          type: 'api_error',
-          message: errorMessage,
-          context: {
-            status: response.status,
-            statusText: response.statusText,
-            url: response.url,
-          },
-        });
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('Login attempt for email:', data.email);
       }
+      await login(data.email, data.password);
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('Login successful');
+      }
+      // Login successful - the useEffect above will handle redirect
+      // after user roles are fully loaded
     } catch (err) {
-      logError({
-        type: 'network_error',
-        message: (err as Error)?.message || 'Błąd połączenia z serwerem',
-        context: {
-          name: (err as Error)?.name,
-          stack: (err as Error)?.stack,
-        },
-      });
-      setError('Błąd połączenia z serwerem');
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Login error:', err);
+      }
+      const errorMessage =
+        err instanceof Error ? err.message : 'Błąd podczas logowania';
+      const parsedError = parseBackendError(errorMessage);
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('Setting error message:', parsedError.message);
+      }
+      setError(parsedError.message);
     } finally {
       setLoading(false);
     }

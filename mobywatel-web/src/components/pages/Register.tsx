@@ -19,6 +19,11 @@ export default function Register() {
     setError('');
     setSuccess(false);
 
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.log('Registration attempt for email:', data.email);
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
@@ -28,9 +33,24 @@ export default function Register() {
         body: JSON.stringify(data),
       });
 
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.log('Registration response:', {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok,
+        });
+      }
+
       if (response.ok) {
         // Success response - should be JSON with success flag
         const result = await response.json();
+
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.log('Registration success response:', result);
+        }
+
         if (result.successful) {
           setSuccess(true);
           // Redirect to login page after successful registration
@@ -38,7 +58,13 @@ export default function Register() {
             navigate('/login');
           }, 2000);
         } else {
-          setError(result.message || 'Błąd podczas rejestracji');
+          const errorMessage = result.message || 'Błąd podczas rejestracji';
+          setError(errorMessage);
+          logError({
+            type: 'api_error',
+            message: errorMessage,
+            context: { result },
+          });
         }
       } else {
         // Error response - could be JSON or plain text
@@ -51,6 +77,11 @@ export default function Register() {
           // Try to parse as JSON first
           const result = await response.json();
           errorMessage = result.message || errorMessage;
+
+          if (import.meta.env.DEV) {
+            // eslint-disable-next-line no-console
+            console.log('Registration JSON error response:', result);
+          }
         } catch {
           // If JSON parsing fails, treat as plain text using the cloned response
           try {
@@ -62,6 +93,11 @@ export default function Register() {
               } else {
                 errorMessage = textResponse;
               }
+            }
+
+            if (import.meta.env.DEV) {
+              // eslint-disable-next-line no-console
+              console.log('Registration text error response:', textResponse);
             }
           } catch (textError) {
             // If both JSON and text parsing fail, use default message
@@ -85,6 +121,11 @@ export default function Register() {
         });
       }
     } catch (err) {
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.error('Registration network error:', err);
+      }
+
       logError({
         type: 'network_error',
         message: (err as Error)?.message || 'Błąd połączenia z serwerem',

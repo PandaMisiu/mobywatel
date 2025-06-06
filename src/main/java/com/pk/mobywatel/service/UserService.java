@@ -69,4 +69,9 @@ public class UserService {
         UserModel user = userRepository.findByEmail(email).orElseThrow(()->new RuntimeException("No user with this username"));
         return user.getUserID();
     }
+
+    public String[] getUserRolesFromEmail(String email) {
+        UserModel user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("No user with this email"));
+        return new String[]{"ROLE_" + user.getRole().name()};
+    }
 }
