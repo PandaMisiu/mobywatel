@@ -6,6 +6,7 @@ import com.pk.mobywatel.request.CitizenBody;
 import com.pk.mobywatel.request.DocumentIssueBody;
 import com.pk.mobywatel.request.PersonalDataUpdateBody;
 import com.pk.mobywatel.request.RegisterBody;
+import com.pk.mobywatel.response.CitizenDto;
 import com.pk.mobywatel.response.DocumentDto;
 import com.pk.mobywatel.response.DriverLicenseDto;
 import com.pk.mobywatel.response.IdentityCardDto;
@@ -30,6 +31,25 @@ public class CitizenService {
     private final DocumentIssueRequestRepository documentIssueRequestRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+
+    public CitizenDto getCitizenPersonalData(String token) throws BadRequestException {
+        UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        var citizen = citizenRepository.findByUser(citizenUserModel).orElseThrow(
+                () -> new BadRequestException("Citizen not found")
+        );
+
+        return new CitizenDto(
+                citizen.getCitizenID(),
+                citizen.getFirstName(),
+                citizen.getLastName(),
+                citizen.getBirthDate(),
+                citizen.getPESEL(),
+                citizen.getGender(),
+                citizenUserModel.getEmail()
+        );
+    }
 
     public List<DocumentDto> getCitizenDocuments(String token) throws BadRequestException {
         UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
@@ -121,7 +141,7 @@ public class CitizenService {
             dto.setExpirationDate(dl.getExpirationDate());
             dto.setPhotoURL(dl.getPhotoURL());
             dto.setLost(dl.getLost());
-            dto.setCategories(dl.getCategories());
+            dto.setCategories(dl.getCategories().stream().sorted().toList());
             dto.setType("DRIVER_LICENSE");
             return dto;
         } else if (document instanceof IdentityCard ic) {

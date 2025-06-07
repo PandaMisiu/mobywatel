@@ -8,6 +8,8 @@ import com.pk.mobywatel.request.ProcessDocumentIssueBody;
 import com.pk.mobywatel.request.ProcessPersonalDataUpdateBody;
 import com.pk.mobywatel.response.*;
 import com.pk.mobywatel.util.Gender;
+import com.pk.mobywatel.util.LicenseCategory;
+import com.pk.mobywatel.util.RequestedDocument;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
@@ -18,8 +20,10 @@ import pl.unak7.peselvalidator.GenderEnum;
 import pl.unak7.peselvalidator.PeselValidator;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -210,13 +214,15 @@ public class OfficialService {
                     .requestID(dl.getRequestID())
                     .citizenID(dl.getCitizen().getCitizenID())
                     .photoURL(dl.getPhotoURL())
-                    .categories(dl.getCategories())
+                    .type(RequestedDocument.DRIVER_LICENSE)
+                    .categories(dl.getCategories().stream().sorted().toList())
                     .build();
         } else if (documentIssueRequest instanceof IdentityCardIssueRequest ic) {
             return IdentityCardIssueDto.builder()
                     .requestID(ic.getRequestID())
-                    .photoURL(ic.getPhotoURL())
                     .citizenID(ic.getCitizen().getCitizenID())
+                    .photoURL(ic.getPhotoURL())
+                    .type(RequestedDocument.IDENTITY_CARD)
                     .citizenship(ic.getCitizenship())
                     .build();
         } else {
@@ -239,30 +245,56 @@ public class OfficialService {
             Official official = officialRepository.findByUser(officialUser)
                     .orElseThrow(() -> new BadRequestException("Official not found."));
 
-            if (documentIssueRequest instanceof IdentityCardIssueRequest) {
-                IdentityCard identityCard = IdentityCard.builder()
-                        .citizen(documentIssueRequest.getCitizen())
-                        .photoURL(documentIssueRequest.getPhotoURL())
-                        .issueDate(LocalDate.now())
-                        .expirationDate(body.expirationDate())
-                        .issueAuthority(official)
-                        .lost(false)
-                        .citizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship())
-                        .build();
+            Optional<List<Document>> documentOptional = documentRepository.findByCitizen(documentIssueRequest.getCitizen());
 
-                documentRepository.save(identityCard);
-            } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
-                DriverLicense identityCard = DriverLicense.builder()
-                        .citizen(documentIssueRequest.getCitizen())
-                        .photoURL(documentIssueRequest.getPhotoURL())
-                        .issueDate(LocalDate.now())
-                        .expirationDate(body.expirationDate())
-                        .issueAuthority(official)
-                        .lost(false)
-                        .categories(((DriverLicenseIssueRequest) documentIssueRequest).getCategories())
-                        .build();
+            if (documentOptional.isPresent()) {
+                for (Document document : documentOptional.get()) {
+                    document.setPhotoURL(documentIssueRequest.getPhotoURL());
+                    document.setIssueDate(LocalDate.now());
+                    document.setExpirationDate(body.expirationDate());
+                    document.setIssueAuthority(official);
 
-                documentRepository.save(identityCard);
+                    if (document instanceof IdentityCard identityCard && documentIssueRequest instanceof IdentityCardIssueRequest) {
+                        identityCard.setCitizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship());
+
+                        documentRepository.save(document);
+                    } else if (document instanceof DriverLicense driverLicense && documentIssueRequest instanceof DriverLicenseIssueRequest) {
+
+                        for (LicenseCategory category: ((DriverLicenseIssueRequest) documentIssueRequest).getCategories()) {
+                            if (!driverLicense.getCategories().contains(category)) {
+                                driverLicense.getCategories().add(category);
+                            }
+                        }
+
+                        documentRepository.save(document);
+                    }
+                }
+            } else {
+                if (documentIssueRequest instanceof IdentityCardIssueRequest) {
+                    IdentityCard identityCard = IdentityCard.builder()
+                            .citizen(documentIssueRequest.getCitizen())
+                            .photoURL(documentIssueRequest.getPhotoURL())
+                            .issueDate(LocalDate.now())
+                            .expirationDate(body.expirationDate())
+                            .issueAuthority(official)
+                            .lost(false)
+                            .citizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship())
+                            .build();
+
+                    documentRepository.save(identityCard);
+                } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
+                    DriverLicense identityCard = DriverLicense.builder()
+                            .citizen(documentIssueRequest.getCitizen())
+                            .photoURL(documentIssueRequest.getPhotoURL())
+                            .issueDate(LocalDate.now())
+                            .expirationDate(body.expirationDate())
+                            .issueAuthority(official)
+                            .lost(false)
+                            .categories(((DriverLicenseIssueRequest) documentIssueRequest).getCategories().stream().sorted().toList())
+                            .build();
+
+                    documentRepository.save(identityCard);
+                }
             }
         }
 

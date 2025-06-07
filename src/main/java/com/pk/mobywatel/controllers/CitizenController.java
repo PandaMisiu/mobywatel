@@ -2,6 +2,7 @@ package com.pk.mobywatel.controllers;
 
 import com.pk.mobywatel.request.*;
 import com.pk.mobywatel.response.ApiResponse;
+import com.pk.mobywatel.response.CitizenDto;
 import com.pk.mobywatel.response.DocumentDto;
 import com.pk.mobywatel.service.CitizenService;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,11 @@ import java.util.List;
 @Secured({"ROLE_CITIZEN", "ROLE_ADMIN"})
 public class CitizenController {
     private final CitizenService citizenService;
+
+    @GetMapping("/personalData")
+    public ResponseEntity<CitizenDto> getPersonalData(@CookieValue(name = "jwt") String token) throws BadRequestException {
+        return ResponseEntity.ok(citizenService.getCitizenPersonalData(token));
+    }
 
     @GetMapping("/docs")
     public ResponseEntity<List<DocumentDto>> getCitizenDocuments(@CookieValue(name = "jwt") String token) throws BadRequestException {
