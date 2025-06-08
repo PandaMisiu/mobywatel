@@ -2,6 +2,7 @@ package com.pk.mobywatel.model;
 
 import com.pk.mobywatel.util.LicenseCategory;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,5 +23,6 @@ public class DriverLicenseIssueRequest extends DocumentIssueRequest {
             joinColumns = @JoinColumn(name = "driver_license_id")
     )
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private List<LicenseCategory> categories = new ArrayList<>();
 }
