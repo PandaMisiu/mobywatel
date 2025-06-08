@@ -12,7 +12,8 @@ import {
   DialogActions,
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { PageLayout, DashboardStatsCard } from '../organisms';
+import { PageLayout } from '../organisms';
+import { AdminDashboardStatsCard } from '../organisms/AdminDashboardStatsCard';
 import { OfficialsTable } from '../molecules/OfficialsTable';
 import { CitizensTable } from '../molecules/CitizensTable';
 import { EditOfficialModal } from '../molecules/EditOfficialModal';
@@ -25,9 +26,9 @@ import type {
   OfficialData,
   OfficialCreateData,
   OfficialUpdateData,
-  AdminDashboardStats,
 } from '../../types/admin';
 import type { CitizenData, CitizenUpdateData } from '../../types/official';
+import type { AdminDashboardStats } from '../organisms/AdminDashboardStatsCard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -160,12 +161,6 @@ export function AdminDashboard() {
       const stats: AdminDashboardStats = {
         totalOfficials: officials.length,
         totalCitizens: citizens.length,
-        pendingPersonalDataRequests: 0, // Would need separate API call
-        pendingDocumentRequests: 0, // Would need separate API call
-        approvedPersonalDataRequests: 0,
-        rejectedPersonalDataRequests: 0,
-        approvedDocumentRequests: 0,
-        rejectedDocumentRequests: 0,
       };
       setDashboardStats(stats);
     } catch (error) {
@@ -332,6 +327,13 @@ export function AdminDashboard() {
     setActiveTab(newValue);
   };
 
+  // Ensure activeTab is always valid (max 2 tabs: 0, 1)
+  React.useEffect(() => {
+    if (activeTab > 1) {
+      setActiveTab(0);
+    }
+  }, [activeTab]);
+
   return (
     <PageLayout
       title='Panel Administratora'
@@ -348,38 +350,20 @@ export function AdminDashboard() {
       )}
 
       {/* Dashboard Stats */}
-      <DashboardStatsCard
-        stats={
-          dashboardStats
-            ? {
-                totalCitizens: dashboardStats.totalCitizens,
-                pendingPersonalDataRequests:
-                  dashboardStats.pendingPersonalDataRequests,
-                pendingDocumentRequests: dashboardStats.pendingDocumentRequests,
-                approvedPersonalDataRequests:
-                  dashboardStats.approvedPersonalDataRequests,
-                rejectedPersonalDataRequests:
-                  dashboardStats.rejectedPersonalDataRequests,
-                approvedDocumentRequests:
-                  dashboardStats.approvedDocumentRequests,
-                rejectedDocumentRequests:
-                  dashboardStats.rejectedDocumentRequests,
-              }
-            : null
-        }
+      <AdminDashboardStatsCard
+        stats={dashboardStats}
         isLoading={isLoadingStats}
       />
 
       {/* Tabs */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs
-          value={activeTab}
+          value={activeTab > 1 ? 0 : activeTab}
           onChange={handleTabChange}
           aria-label='admin dashboard tabs'
         >
           <Tab label='Urzędnicy' />
           <Tab label='Obywatele' />
-          <Tab label='Logi systemowe' />
         </Tabs>
       </Box>
 
@@ -430,20 +414,6 @@ export function AdminDashboard() {
           onEdit={handleEditCitizen}
           onDelete={handleDeleteCitizen}
         />
-      </TabPanel>
-
-      {/* System Logs Tab */}
-      <TabPanel value={activeTab} index={2}>
-        <Box sx={{ mb: 2 }}>
-          <AppTypography variant='h6'>Logi systemowe</AppTypography>
-          <AppTypography variant='body2' color='text.secondary'>
-            Funkcjonalność logów będzie dostępna w przyszłych wersjach
-          </AppTypography>
-        </Box>
-        <Alert severity='info'>
-          Panel logów systemowych jest w trakcie rozwoju. Ta funkcjonalność
-          będzie dostępna w przyszłych wersjach systemu.
-        </Alert>
       </TabPanel>
 
       {/* Modals */}

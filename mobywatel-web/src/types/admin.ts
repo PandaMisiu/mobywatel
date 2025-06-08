@@ -28,12 +28,6 @@ export interface OfficialUpdateData extends Record<string, unknown> {
 export interface AdminDashboardStats {
   totalOfficials: number;
   totalCitizens: number;
-  pendingPersonalDataRequests: number;
-  pendingDocumentRequests: number;
-  approvedPersonalDataRequests: number;
-  rejectedPersonalDataRequests: number;
-  approvedDocumentRequests: number;
-  rejectedDocumentRequests: number;
 }
 
 export interface LogEntry {

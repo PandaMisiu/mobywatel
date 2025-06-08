@@ -9,10 +9,8 @@ import { EditCitizenModal } from '../molecules/EditCitizenModal';
 import { ViewPersonalDataRequestModal } from '../molecules/ViewPersonalDataRequestModal';
 import { ViewDocumentRequestModal } from '../molecules/ViewDocumentRequestModal';
 import { ConfirmDeleteDialog } from '../molecules/ConfirmDeleteDialog';
-import {
-  DashboardStatsCard,
-  type DashboardStats,
-} from '../organisms/DashboardStatsCard';
+import { OfficialDashboardStatsCard } from '../organisms/OfficialDashboardStatsCard';
+import type { OfficialDashboardStats } from '../organisms/OfficialDashboardStatsCard';
 import { API_BASE_URL } from '../../config/api';
 import { parseBackendError } from '../../utils/errorUtils';
 import type {
@@ -57,7 +55,7 @@ export function OfficialDashboard() {
     DocumentIssueRequest[]
   >([]);
   const [dashboardStats, setDashboardStats] =
-    React.useState<DashboardStats | null>(null);
+    React.useState<OfficialDashboardStats | null>(null);
 
   // Loading states
   const [isLoadingCitizens, setIsLoadingCitizens] = React.useState(false);
@@ -106,20 +104,12 @@ export function OfficialDashboard() {
     try {
       // Note: These endpoints would need to be implemented in the backend
       // For now, we'll calculate from the data we have
-      const stats: DashboardStats = {
+      const stats: OfficialDashboardStats = {
         totalCitizens: citizens.length,
         pendingPersonalDataRequests: personalDataRequests.filter(
           (r) => !r.processed
         ).length,
         pendingDocumentRequests: documentRequests.length, // Assuming all are pending
-        approvedPersonalDataRequests: personalDataRequests.filter(
-          (r) => r.processed && r.approved
-        ).length,
-        rejectedPersonalDataRequests: personalDataRequests.filter(
-          (r) => r.processed && !r.approved
-        ).length,
-        approvedDocumentRequests: 0, // Would need backend endpoint
-        rejectedDocumentRequests: 0, // Would need backend endpoint
       };
       setDashboardStats(stats);
     } catch {
@@ -128,10 +118,6 @@ export function OfficialDashboard() {
         totalCitizens: 0,
         pendingPersonalDataRequests: 0,
         pendingDocumentRequests: 0,
-        approvedPersonalDataRequests: 0,
-        rejectedPersonalDataRequests: 0,
-        approvedDocumentRequests: 0,
-        rejectedDocumentRequests: 0,
       });
     } finally {
       setIsLoadingStats(false);
@@ -477,7 +463,10 @@ export function OfficialDashboard() {
         Panel Urzędnika
       </AppTypography>
 
-      <DashboardStatsCard stats={dashboardStats} isLoading={isLoadingStats} />
+      <OfficialDashboardStatsCard
+        stats={dashboardStats}
+        isLoading={isLoadingStats}
+      />
 
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={activeTab} onChange={handleTabChange}>
