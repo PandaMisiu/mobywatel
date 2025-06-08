@@ -133,18 +133,31 @@ export function DocumentRequestModal({
 
           {/* Auto-populated citizen data */}
           {citizenData && (
-            <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-              <AppTypography variant='subtitle2' gutterBottom>
+            <Box
+              sx={{
+                mb: 3,
+                p: 2,
+                bgcolor: 'background.default',
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: 1,
+              }}
+            >
+              <AppTypography
+                variant='subtitle2'
+                gutterBottom
+                color='text.primary'
+              >
                 Dane wnioskodawcy (wypełnione automatycznie)
               </AppTypography>
-              <AppTypography variant='body2'>
+              <AppTypography variant='body2' color='text.primary'>
                 <strong>Imię i nazwisko:</strong> {citizenData.firstName}{' '}
                 {citizenData.lastName}
               </AppTypography>
-              <AppTypography variant='body2'>
+              <AppTypography variant='body2' color='text.primary'>
                 <strong>PESEL:</strong> {citizenData.PESEL}
               </AppTypography>
-              <AppTypography variant='body2'>
+              <AppTypography variant='body2' color='text.primary'>
                 <strong>Data urodzenia:</strong>{' '}
                 {new Date(citizenData.birthDate).toLocaleDateString('pl-PL')}
               </AppTypography>

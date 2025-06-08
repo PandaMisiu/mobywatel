@@ -92,8 +92,21 @@ export function EditOfficialModal({
           )}
 
           {officialData && (
-            <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-              <AppTypography variant='subtitle2' gutterBottom>
+            <Box
+              sx={{
+                mb: 3,
+                p: 2,
+                bgcolor: 'background.default',
+                border: 1,
+                borderColor: 'divider',
+                borderRadius: 1,
+              }}
+            >
+              <AppTypography
+                variant='subtitle2'
+                gutterBottom
+                color='text.primary'
+              >
                 Edytujesz dane urzędnika ID: {officialData.officialID}
               </AppTypography>
             </Box>

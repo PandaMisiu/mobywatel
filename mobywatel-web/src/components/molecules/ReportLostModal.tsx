@@ -20,7 +20,6 @@ export function ReportLostModal({
   open,
   onClose,
   onConfirm,
-  documentId,
 }: ReportLostModalProps) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
@@ -39,8 +38,7 @@ export function ReportLostModal({
 
         <Box sx={{ mb: 2 }}>
           <AppTypography variant='body1' gutterBottom>
-            Czy na pewno chcesz zgłosić utratę dokumentu o ID:{' '}
-            <strong>{documentId}</strong>?
+            Czy na pewno chcesz zgłosić utratę tego dokumentu?
           </AppTypography>
 
           <AppTypography variant='body2' color='text.secondary' sx={{ mt: 2 }}>

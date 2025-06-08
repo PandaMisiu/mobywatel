@@ -117,12 +117,6 @@ export function DocumentsOverview({
                           <AppTypography variant='body2' fontWeight='medium'>
                             {getDocumentName(document.type)}
                           </AppTypography>
-                          <AppTypography
-                            variant='caption'
-                            color='text.secondary'
-                          >
-                            ID: {document.documentID}
-                          </AppTypography>
                         </Box>
                       </Box>
                     </TableCell>

@@ -100,17 +100,30 @@ export function PersonalDataRequestModal({
           {/* Current data display */}
           {currentData && (
             <>
-              <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-                <AppTypography variant='subtitle2' gutterBottom>
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2,
+                  bgcolor: 'background.default',
+                  border: 1,
+                  borderColor: 'divider',
+                  borderRadius: 1,
+                }}
+              >
+                <AppTypography
+                  variant='subtitle2'
+                  gutterBottom
+                  color='text.primary'
+                >
                   Aktualne dane
                 </AppTypography>
-                <AppTypography variant='body2'>
+                <AppTypography variant='body2' color='text.primary'>
                   <strong>Imię:</strong> {currentData.firstName}
                 </AppTypography>
-                <AppTypography variant='body2'>
+                <AppTypography variant='body2' color='text.primary'>
                   <strong>Nazwisko:</strong> {currentData.lastName}
                 </AppTypography>
-                <AppTypography variant='body2'>
+                <AppTypography variant='body2' color='text.primary'>
                   <strong>Płeć:</strong>{' '}
                   {currentData.gender === 'MALE' ? 'Mężczyzna' : 'Kobieta'}
                 </AppTypography>

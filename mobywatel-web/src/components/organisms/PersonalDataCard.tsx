@@ -48,9 +48,6 @@ export function PersonalDataCard({
             <AppTypography variant='h6' component='h2'>
               {citizenData.firstName} {citizenData.lastName}
             </AppTypography>
-            <AppTypography variant='body2' color='text.secondary'>
-              ID: {citizenData.citizenID}
-            </AppTypography>
           </Box>
         </Box>
 
