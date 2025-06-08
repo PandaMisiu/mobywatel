@@ -1,5 +1,6 @@
 package com.pk.mobywatel.model;
 
+import com.pk.mobywatel.util.EncryptionConverter;
 import com.pk.mobywatel.util.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ public class UserModel implements UserDetails {
     private Integer userID;
 
     @Column(unique = true, nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String email;
 
     @Column(nullable = false)

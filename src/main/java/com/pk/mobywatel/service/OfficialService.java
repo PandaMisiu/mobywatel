@@ -82,12 +82,12 @@ public class OfficialService {
         }
         else updateBirthDate = LocalDate.now();
 
-        if(validator.validateUpdateField(body.PESEL())) updatePESEL = body.PESEL();
+        if(validator.validateUpdateField(body.PESEL())) {
+            if(!body.PESEL().equals(citizen.getPESEL()) && validator.checkIfPESELIsTaken(body.PESEL())) throw new BadRequestException("PESEL is taken.");
+            updatePESEL = body.PESEL();
+            if (!peselValidator.validate(updatePESEL, updateBirthDate, peselGender)) throw new BadRequestException("The birth date and gender must match the PESEL.");
+        }
         else updatePESEL = citizen.getPESEL();
-
-        if(!body.PESEL().equals(citizen.getPESEL()) && validator.checkIfPESELIsTaken(body.PESEL())) throw new BadRequestException("PESEL is taken.");
-
-        if (!peselValidator.validate(updatePESEL, updateBirthDate, peselGender)) throw new BadRequestException("The birth date and gender must match the PESEL.");
 
         citizen.setPESEL(updatePESEL);
         citizen.setBirthDate(updateBirthDate);
@@ -202,7 +202,6 @@ public class OfficialService {
                 .filter(Objects::nonNull)
                 .toList();
     }
-
 
     private DocumentIssueRequestDto mapToDto(DocumentIssueRequest documentIssueRequest) {
         if (documentIssueRequest instanceof DriverLicenseIssueRequest dl) {

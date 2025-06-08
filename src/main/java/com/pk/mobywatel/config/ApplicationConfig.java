@@ -2,7 +2,9 @@ package com.pk.mobywatel.config;
 
 
 import com.pk.mobywatel.repository.UserRepository;
+import com.pk.mobywatel.util.AESUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,15 +14,24 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.unak7.peselvalidator.PeselValidator;
 import pl.unak7.peselvalidator.PeselValidatorImpl;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
     private final UserRepository userRepository;
+
+    @Value("${app.encryption.key}")
+    private String encryptionKey;
+
+    @PostConstruct
+    public void init() {
+        AESUtil.setKey(encryptionKey);
+    }
 
     @Bean
     public UserDetailsService userDetailsService(){

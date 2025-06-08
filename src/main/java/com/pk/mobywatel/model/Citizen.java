@@ -1,5 +1,6 @@
 package com.pk.mobywatel.model;
 
+import com.pk.mobywatel.util.EncryptionConverter;
 import com.pk.mobywatel.util.Gender;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,15 +27,18 @@ public class Citizen {
     private UserModel user;
 
     @Column(nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String firstName;
 
     @Column(nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String lastName;
 
     @Column(nullable = false)
     private LocalDate birthDate;
 
     @Column(unique = true,nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String PESEL;
 
     @Column(nullable = false)

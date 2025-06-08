@@ -83,7 +83,7 @@ public class MockDataConfig {
                     .firstName("Jan")
                     .lastName("Kowalski")
                     .birthDate(LocalDate.of(1985, 5, 15))
-                    .PESEL("85051512345")
+                    .PESEL("85051546998")
                     .gender(Gender.MALE)
                     .build();
 
@@ -92,7 +92,7 @@ public class MockDataConfig {
                     .firstName("Maria")
                     .lastName("Nowak")
                     .birthDate(LocalDate.of(1990, 8, 22))
-                    .PESEL("90082298765")
+                    .PESEL("90082281655")
                     .gender(Gender.FEMALE)
                     .build();
 
@@ -101,7 +101,7 @@ public class MockDataConfig {
                     .firstName("Adam")
                     .lastName("Wiśniewski")
                     .birthDate(LocalDate.of(1978, 12, 3))
-                    .PESEL("78120387654")
+                    .PESEL("78120393333")
                     .gender(Gender.MALE)
                     .build();
 
