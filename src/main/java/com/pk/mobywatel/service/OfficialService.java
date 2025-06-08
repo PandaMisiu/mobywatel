@@ -246,31 +246,23 @@ public class OfficialService {
 
             Optional<List<Document>> documentOptional = documentRepository.findByCitizen(documentIssueRequest.getCitizen());
 
-            if (documentOptional.isPresent()) {
-                for (Document document : documentOptional.get()) {
-                    document.setPhotoURL(documentIssueRequest.getPhotoURL());
-                    document.setIssueDate(LocalDate.now());
-                    document.setExpirationDate(body.expirationDate());
-                    document.setIssueAuthority(official);
+            if (documentIssueRequest instanceof IdentityCardIssueRequest) {
+                IdentityCard identityCard;
 
-                    if (document instanceof IdentityCard identityCard && documentIssueRequest instanceof IdentityCardIssueRequest) {
-                        identityCard.setCitizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship());
+                if (documentOptional.isPresent() && documentOptional.get().stream().anyMatch(doc -> doc instanceof IdentityCard)) {
+                    identityCard = (IdentityCard) documentOptional.get().stream()
+                            .filter(doc -> doc instanceof IdentityCard)
+                            .findFirst()
+                            .get();
 
-                        documentRepository.save(document);
-                    } else if (document instanceof DriverLicense driverLicense && documentIssueRequest instanceof DriverLicenseIssueRequest) {
+                    identityCard.setPhotoURL(documentIssueRequest.getPhotoURL());
+                    identityCard.setIssueDate(LocalDate.now());
+                    identityCard.setExpirationDate(body.expirationDate());
+                    identityCard.setIssueAuthority(official);
 
-                        for (LicenseCategory category: ((DriverLicenseIssueRequest) documentIssueRequest).getCategories()) {
-                            if (!driverLicense.getCategories().contains(category)) {
-                                driverLicense.getCategories().add(category);
-                            }
-                        }
-
-                        documentRepository.save(document);
-                    }
-                }
-            } else {
-                if (documentIssueRequest instanceof IdentityCardIssueRequest) {
-                    IdentityCard identityCard = IdentityCard.builder()
+                    identityCard.setCitizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship());
+                } else {
+                    identityCard = IdentityCard.builder()
                             .citizen(documentIssueRequest.getCitizen())
                             .photoURL(documentIssueRequest.getPhotoURL())
                             .issueDate(LocalDate.now())
@@ -279,10 +271,30 @@ public class OfficialService {
                             .lost(false)
                             .citizenship(((IdentityCardIssueRequest) documentIssueRequest).getCitizenship())
                             .build();
+                }
 
-                    documentRepository.save(identityCard);
-                } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
-                    DriverLicense identityCard = DriverLicense.builder()
+                documentRepository.save(identityCard);
+            } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
+                DriverLicense driverLicense;
+
+                if (documentOptional.isPresent() && documentOptional.get().stream().anyMatch(doc -> doc instanceof DriverLicense)) {
+                    driverLicense = (DriverLicense) documentOptional.get().stream()
+                            .filter(doc -> doc instanceof DriverLicense)
+                            .findFirst()
+                            .get();
+
+                    driverLicense.setPhotoURL(documentIssueRequest.getPhotoURL());
+                    driverLicense.setIssueDate(LocalDate.now());
+                    driverLicense.setExpirationDate(body.expirationDate());
+                    driverLicense.setIssueAuthority(official);
+
+                    for (LicenseCategory category: ((DriverLicenseIssueRequest) documentIssueRequest).getCategories()) {
+                        if (!driverLicense.getCategories().contains(category)) {
+                            driverLicense.getCategories().add(category);
+                        }
+                    }
+                } else {
+                    driverLicense = DriverLicense.builder()
                             .citizen(documentIssueRequest.getCitizen())
                             .photoURL(documentIssueRequest.getPhotoURL())
                             .issueDate(LocalDate.now())
@@ -291,9 +303,9 @@ public class OfficialService {
                             .lost(false)
                             .categories(((DriverLicenseIssueRequest) documentIssueRequest).getCategories().stream().sorted().toList())
                             .build();
-
-                    documentRepository.save(identityCard);
                 }
+
+                documentRepository.save(driverLicense);
             }
         }
 

@@ -10,7 +10,6 @@ services:
       # lokalizacja wallet'u jest inna w kontenerze
       - TNS_ADMIN=/app/wallet
       - JAVA_OPTS=-Xmx512m -Xms256m
-      - SPRING_PROFILES_ACTIVE=${PROFILE:-dev}
     volumes:
       - ./src/main/resources/application.properties:/app/application.properties
       - ./src/main/resources/wallet:/app/wallet
