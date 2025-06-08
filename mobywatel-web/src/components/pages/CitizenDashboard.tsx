@@ -78,25 +78,32 @@ export default function CitizenDashboard() {
   };
 
   const fetchCitizenData = async () => {
-    // For now, we'll get this from JWT token or user context
-    // In a real app, you might need a separate endpoint to get current user data
     try {
-      // This is a placeholder - you might need to add an endpoint to get current citizen data
-      // or extract it from the JWT token on the frontend
-      setCitizenData({
-        citizenID: 1,
-        firstName: 'Jan',
-        lastName: 'Kowalski',
-        birthDate: '1990-05-15',
-        PESEL: '90051512340',
-        gender: 'MALE',
-        email: 'jan.kowalski@example.com',
+      const response = await fetch(`${API_BASE_URL}/api/citizen/personalData`, {
+        credentials: 'include',
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCitizenData({
+          citizenID: data.citizenID,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          birthDate: data.birthDate,
+          PESEL: data.PESEL,
+          gender: data.gender,
+          email: data.email,
+        });
+      } else {
+        const errorText = await response.text();
+        setError(parseBackendError(errorText).message);
+      }
     } catch (err) {
       logError({
         type: 'network_error',
         message: (err as Error)?.message || 'Błąd pobierania danych obywatela',
       });
+      setError('Błąd połączenia z serwerem');
     }
   };
 
