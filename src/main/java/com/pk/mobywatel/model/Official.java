@@ -1,5 +1,6 @@
 package com.pk.mobywatel.model;
 
+import com.pk.mobywatel.util.EncryptionConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,12 +27,15 @@ public class Official {
     private UserModel user;
 
     @Column(nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String firstName;
 
     @Column(nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String lastName;
 
     @Column(nullable = false)
+    @Convert(converter = EncryptionConverter.class)
     private String position;
 
     @OneToMany(mappedBy = "issueAuthority", cascade = CascadeType.ALL, orphanRemoval = true)

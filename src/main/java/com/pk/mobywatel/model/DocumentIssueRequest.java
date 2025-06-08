@@ -1,5 +1,6 @@
 package com.pk.mobywatel.model;
 
+import com.pk.mobywatel.util.EncryptionConverter;
 import com.pk.mobywatel.util.LicenseCategory;
 import com.pk.mobywatel.util.RequestedDocument;
 import jakarta.persistence.*;
@@ -27,6 +28,7 @@ public class DocumentIssueRequest {
     private Boolean processed;
 
     @Column(nullable = true)
+    @Convert(converter = EncryptionConverter.class)
     private String photoURL;
 
     @Column(nullable = false)
