@@ -29,8 +29,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           const userData = {
             userID: data.userID,
             email: data.email,
-            firstName: data.firstName,
-            lastName: data.lastName,
+            firstName: data.firstName || null,
+            lastName: data.lastName || null,
             roles: Array.isArray(data.roles) ? data.roles : [],
           };
 

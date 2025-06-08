@@ -18,7 +18,9 @@ export default function Login() {
   useEffect(() => {
     if (user && !isLoading && user.roles && user.roles.length > 0) {
       // Redirect based on user role
-      if (user.roles.includes('ROLE_OFFICIAL')) {
+      if (user.roles.includes('ROLE_ADMIN')) {
+        navigate('/admin-dashboard');
+      } else if (user.roles.includes('ROLE_OFFICIAL')) {
         navigate('/official-dashboard');
       } else if (user.roles.includes('ROLE_CITIZEN')) {
         navigate('/dashboard');

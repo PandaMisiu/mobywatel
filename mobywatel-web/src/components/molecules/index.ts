@@ -16,6 +16,10 @@ export { EditCitizenModal } from './EditCitizenModal';
 export { ViewPersonalDataRequestModal } from './ViewPersonalDataRequestModal';
 export { ViewDocumentRequestModal } from './ViewDocumentRequestModal';
 export { ConfirmDeleteDialog } from './ConfirmDeleteDialog';
+// Admin Dashboard Components
+export { OfficialsTable } from './OfficialsTable';
+export { EditOfficialModal } from './EditOfficialModal';
+export { CreateOfficialModal } from './CreateOfficialModal';
 
 export type { FeatureCardProps } from './FeatureCard';
 export type { HeroSectionProps } from './HeroSection';
@@ -41,3 +45,7 @@ export type { EditCitizenModalProps } from './EditCitizenModal';
 export type { ViewPersonalDataRequestModalProps } from './ViewPersonalDataRequestModal';
 export type { ViewDocumentRequestModalProps } from './ViewDocumentRequestModal';
 export type { ConfirmDeleteDialogProps } from './ConfirmDeleteDialog';
+// Admin Dashboard Component Types
+export type { OfficialsTableProps } from './OfficialsTable';
+export type { EditOfficialModalProps } from './EditOfficialModal';
+export type { CreateOfficialModalProps } from './CreateOfficialModal';

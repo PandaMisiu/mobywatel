@@ -132,6 +132,21 @@ export default function Navigation() {
                   Panel urzędnika
                 </AppButton>
               )}
+              {user.roles?.includes('ROLE_ADMIN') && (
+                <AppButton
+                  color='inherit'
+                  variant='text'
+                  component={RouterLink}
+                  to='/admin-dashboard'
+                  sx={{
+                    backgroundColor: isActive('/admin-dashboard')
+                      ? 'rgba(255, 255, 255, 0.1)'
+                      : 'transparent',
+                  }}
+                >
+                  Panel administratora
+                </AppButton>
+              )}
               <IconButton
                 color='inherit'
                 onClick={handleMenuOpen}
