@@ -1,5 +1,8 @@
 package com.pk.mobywatel.service;
 
+import com.pk.mobywatel.model.Log;
+import com.pk.mobywatel.repository.LogRepository;
+import com.pk.mobywatel.response.LogResponse;
 import com.pk.mobywatel.response.OfficialDto;
 import com.pk.mobywatel.model.Official;
 import com.pk.mobywatel.model.UserModel;
@@ -13,6 +16,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +27,7 @@ public class AdminService {
     private final DataValidator validator;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final LogRepository logRepository;
 
     public List<OfficialDto> fetchOfficialsData(){
         List<Official> officials = officialRepository.findAll();
@@ -121,4 +126,16 @@ public class AdminService {
         return new OfficialDto(official.getOfficialID(), official.getFirstName(), official.getLastName(), official.getPosition(), official.getUser().getEmail());
     }
 
+    public List<LogResponse> fetchLogs() {
+        List<Log> logs = logRepository.findAll();
+
+        return logs.stream()
+                .map(log ->
+                    new LogResponse(log.getLogID(),
+                            log.getUserModel().getUserID(),
+                            log.getAccessTimestamp(),
+                            log.getDescription())
+                )
+                .toList();
+    }
 }

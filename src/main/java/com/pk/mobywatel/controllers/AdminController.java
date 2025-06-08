@@ -1,5 +1,6 @@
 package com.pk.mobywatel.controllers;
 
+import com.pk.mobywatel.response.LogResponse;
 import com.pk.mobywatel.response.OfficialDto;
 import com.pk.mobywatel.request.OfficialBody;
 import com.pk.mobywatel.response.ApiResponse;
@@ -41,6 +42,11 @@ public class AdminController {
     public ResponseEntity<ApiResponse> deleteOfficialAccount(@RequestParam Integer officialID) throws BadRequestException {
         adminService.deleteOfficialAccount(officialID);
         return ResponseEntity.ok(new ApiResponse(true, "Official account deleted"));
+    }
+
+    @GetMapping("/logs")
+    public ResponseEntity<List<LogResponse>> getLogs() {
+        return ResponseEntity.ok(adminService.fetchLogs());
     }
 
     // TESTING

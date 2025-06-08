@@ -6,18 +6,15 @@ import com.pk.mobywatel.repository.LogRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.lang.reflect.Method;
-import java.time.LocalDate;
-import java.util.Arrays;
+import java.sql.Timestamp;
 
 @Aspect
 @Component
@@ -46,14 +43,35 @@ public class LoggingAspect {
 
         if (user == null) {
             log = Log.builder()
-                    .accessTimestamp(LocalDate.now())
+                    .accessTimestamp(new Timestamp(System.currentTimeMillis()))
                     .description("Endpoint: " + request.getMethod() + " " + request.getRequestURL() + " accessed; HTTP status code: " + statusCode + "; no user!")
                     .build();
         } else {
             log = Log.builder()
                     .userModel(getCurrentUser())
-                    .accessTimestamp(LocalDate.now())
+                    .accessTimestamp(new Timestamp(System.currentTimeMillis()))
                     .description("Endpoint: " + request.getMethod() + " " + request.getRequestURL() + " accessed; HTTP status code: " + statusCode)
+                    .build();
+        }
+
+        logRepository.save(log);
+    }
+
+    @AfterThrowing(pointcut = "execution(* com.pk.mobywatel.controllers.*.*(..))", throwing = "exception")
+    public void logException(JoinPoint joinPoint, Exception exception) {
+        UserModel user = getCurrentUser();
+        Log log;
+
+        if (user == null) {
+            log = Log.builder()
+                    .accessTimestamp(new Timestamp(System.currentTimeMillis()))
+                    .description("Endpoint: " + request.getMethod() + " " + request.getRequestURL() + "; Exception: " + exception.getLocalizedMessage() + "; no user!")
+                    .build();
+        } else {
+            log = Log.builder()
+                    .userModel(getCurrentUser())
+                    .accessTimestamp(new Timestamp(System.currentTimeMillis()))
+                    .description("Endpoint: " + request.getMethod() + " " + request.getRequestURL() + "; Exception: " + exception.getLocalizedMessage())
                     .build();
         }
 

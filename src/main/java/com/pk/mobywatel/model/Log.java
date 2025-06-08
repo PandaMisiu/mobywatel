@@ -25,7 +25,7 @@ public class Log {
     private UserModel userModel;
 
     @Column(name = "access_timestamp", nullable = false)
-    private LocalDate accessTimestamp;
+    private Timestamp accessTimestamp;
 
     @Column(nullable = false)
     private String description;
