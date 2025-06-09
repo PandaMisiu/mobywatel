@@ -8,8 +8,8 @@ services:
     container_name: mobywatel-backend-prod
     environment:
       # lokalizacja wallet'u jest inna w kontenerze
-      - TNS_ADMIN=/app/wallet
       - JAVA_OPTS=-Xmx1g -Xms512m
+      - TNS_ADMIN=/app/wallet
       - SPRING_PROFILES_ACTIVE=prod
     volumes:
       - ./src/main/resources/application-prod.properties:/app/application.properties

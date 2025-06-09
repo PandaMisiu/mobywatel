@@ -7,6 +7,7 @@ This guide explains how to deploy the Mobywatel application in production using 
 ### Files Overview
 
 - `docker-compose.prod.yml` - Production Docker Compose configuration
+- `Dockerfile.prod` - Production Spring Boot Docker image
 - `nginx.prod.conf` - Production nginx configuration for load balancing
 - `mobywatel-web/Dockerfile.prod` - Production frontend Docker image
 - `mobywatel-web/nginx.prod.conf` - Frontend nginx configuration
