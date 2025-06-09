@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
+@Profile("dev")
 public class MockDataConfig {
 
     private final PasswordEncoder passwordEncoder;
