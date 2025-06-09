@@ -1,0 +1,72 @@
+version: "3.8"
+
+services:
+  springboot-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mobywatel-backend-prod
+    environment:
+      # lokalizacja wallet'u jest inna w kontenerze
+      - TNS_ADMIN=/app/wallet
+      - JAVA_OPTS=-Xmx1g -Xms512m
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - ./src/main/resources/application-prod.properties:/app/application.properties
+      - ./src/main/resources/wallet:/app/wallet
+    restart: unless-stopped
+    networks:
+      - mobywatel-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: ./mobywatel-web
+      dockerfile: Dockerfile.prod
+    container_name: mobywatel-frontend-prod
+    restart: unless-stopped
+    networks:
+      - mobywatel-network
+    depends_on:
+      - springboot-app
+
+  nginx:
+    image: nginx:alpine
+    container_name: mobywatel-nginx-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      # Uncomment the following lines if you have SSL certificates
+      # - ./ssl/cert.pem:/etc/nginx/ssl/cert.pem:ro
+      # - ./ssl/private.key:/etc/nginx/ssl/private.key:ro
+    restart: unless-stopped
+    networks:
+      - mobywatel-network
+    depends_on:
+      - springboot-app
+      - frontend
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost/health",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+networks:
+  mobywatel-network:
+    driver: bridge
+    name: mobywatel-prod-network
