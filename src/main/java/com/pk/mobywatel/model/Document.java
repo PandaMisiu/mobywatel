@@ -26,10 +26,6 @@ public class Document {
     @JoinColumn(name = "citizenID")
     private Citizen citizen;
 
-    @Column(nullable = true)
-    @Convert(converter = EncryptionConverter.class)
-    private String photoURL;
-
     @Column(nullable = false)
     private LocalDate issueDate;
 

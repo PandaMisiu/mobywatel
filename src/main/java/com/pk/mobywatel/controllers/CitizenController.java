@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -41,8 +42,9 @@ public class CitizenController {
 
     @PostMapping("/docs/request")
     public ResponseEntity<ApiResponse> requestDocumentIssue(@CookieValue(name = "jwt") String token,
-                                                            @RequestBody DocumentIssueBody body) throws BadRequestException {
-        citizenService.requestDocumentIssue(body, token);
+                                                            @ModelAttribute DocumentIssueBody body,
+                                                            @RequestParam MultipartFile photo) throws BadRequestException {
+        citizenService.requestDocumentIssue(body, photo, token);
         return ResponseEntity.ok(new ApiResponse(true, "Citizen document issue request report sent"));
     }
 

@@ -3,24 +3,23 @@ package com.pk.mobywatel.service;
 import com.pk.mobywatel.model.*;
 import com.pk.mobywatel.repository.*;
 import com.pk.mobywatel.request.CitizenBody;
-import com.pk.mobywatel.request.DocumentIssueBody;
 import com.pk.mobywatel.request.ProcessDocumentIssueBody;
 import com.pk.mobywatel.request.ProcessPersonalDataUpdateBody;
 import com.pk.mobywatel.response.*;
+import com.pk.mobywatel.util.FilestorageyUtil;
 import com.pk.mobywatel.util.Gender;
 import com.pk.mobywatel.util.LicenseCategory;
 import com.pk.mobywatel.util.RequestedDocument;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.unak7.peselvalidator.GenderEnum;
 import pl.unak7.peselvalidator.PeselValidator;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,6 +38,7 @@ public class OfficialService {
     private final DocumentRepository documentRepository;
     private final JwtService jwtService;
     private final OfficialRepository officialRepository;
+    private final FilesystemService filesystemService;
 
     @Transactional
     public void updateCitizenAccount(CitizenBody body) throws BadRequestException {
@@ -198,8 +198,13 @@ public class OfficialService {
     public List<DocumentIssueRequestDto> getDocumentIssueRequests() {
         return documentIssueRequestRepository.findAll().stream()
                 .map(request -> {
-                    if (!request.getProcessed())
-                        return mapToDto(request);
+                    if (!request.getProcessed()) {
+                        try {
+                            return mapToDto(request);
+                        } catch (BadRequestException e) {
+                            return null;
+                        }
+                    }
                     else
                         return null;
                 })
@@ -207,12 +212,15 @@ public class OfficialService {
                 .toList();
     }
 
-    private DocumentIssueRequestDto mapToDto(DocumentIssueRequest documentIssueRequest) {
+    private DocumentIssueRequestDto mapToDto(DocumentIssueRequest documentIssueRequest) throws BadRequestException {
+        Resource photo = filesystemService.loadDoc(documentIssueRequest.getCitizen().getCitizenID(), documentIssueRequest.getRequestID(), FilestorageyUtil.REQUEST);
+
+
         if (documentIssueRequest instanceof DriverLicenseIssueRequest dl) {
             return DriverLicenseIssueDto.builder()
                     .requestID(dl.getRequestID())
                     .citizenID(dl.getCitizen().getCitizenID())
-                    .photoURL(dl.getPhotoURL())
+//                    .photo(photo)
                     .type(RequestedDocument.DRIVER_LICENSE)
                     .categories(dl.getCategories().stream().sorted().toList())
                     .build();
@@ -220,7 +228,7 @@ public class OfficialService {
             return IdentityCardIssueDto.builder()
                     .requestID(ic.getRequestID())
                     .citizenID(ic.getCitizen().getCitizenID())
-                    .photoURL(ic.getPhotoURL())
+//                    .photo(photo)
                     .type(RequestedDocument.IDENTITY_CARD)
                     .citizenship(ic.getCitizenship())
                     .build();
@@ -255,7 +263,6 @@ public class OfficialService {
                             .findFirst()
                             .get();
 
-                    identityCard.setPhotoURL(documentIssueRequest.getPhotoURL());
                     identityCard.setIssueDate(LocalDate.now());
                     identityCard.setExpirationDate(body.expirationDate());
                     identityCard.setIssueAuthority(official);
@@ -264,7 +271,6 @@ public class OfficialService {
                 } else {
                     identityCard = IdentityCard.builder()
                             .citizen(documentIssueRequest.getCitizen())
-                            .photoURL(documentIssueRequest.getPhotoURL())
                             .issueDate(LocalDate.now())
                             .expirationDate(body.expirationDate())
                             .issueAuthority(official)
@@ -274,6 +280,8 @@ public class OfficialService {
                 }
 
                 documentRepository.save(identityCard);
+
+                filesystemService.moveRequestToDocs(identityCard.getCitizen().getCitizenID(), documentIssueRequest.getRequestID(), identityCard.getDocumentID());
             } else if (documentIssueRequest instanceof DriverLicenseIssueRequest) {
                 DriverLicense driverLicense;
 
@@ -283,7 +291,6 @@ public class OfficialService {
                             .findFirst()
                             .get();
 
-                    driverLicense.setPhotoURL(documentIssueRequest.getPhotoURL());
                     driverLicense.setIssueDate(LocalDate.now());
                     driverLicense.setExpirationDate(body.expirationDate());
                     driverLicense.setIssueAuthority(official);
@@ -296,7 +303,6 @@ public class OfficialService {
                 } else {
                     driverLicense = DriverLicense.builder()
                             .citizen(documentIssueRequest.getCitizen())
-                            .photoURL(documentIssueRequest.getPhotoURL())
                             .issueDate(LocalDate.now())
                             .expirationDate(body.expirationDate())
                             .issueAuthority(official)
@@ -306,6 +312,8 @@ public class OfficialService {
                 }
 
                 documentRepository.save(driverLicense);
+
+                filesystemService.moveRequestToDocs(driverLicense.getCitizen().getCitizenID(), documentIssueRequest.getRequestID(), driverLicense.getDocumentID());
             }
         }
 

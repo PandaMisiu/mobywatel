@@ -14,6 +14,7 @@ import com.pk.mobywatel.util.RequestedDocument;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.unak7.peselvalidator.PeselValidator;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class CitizenService {
     private final DocumentIssueRequestRepository documentIssueRequestRepository;
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final FilesystemService filesystemService;
 
     public CitizenDto getCitizenPersonalData(String token) throws BadRequestException {
         UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
@@ -101,7 +103,7 @@ public class CitizenService {
         personalDataUpdateRequestRepository.save(request);
     }
 
-    public void requestDocumentIssue(DocumentIssueBody body, String token) throws BadRequestException {
+    public void requestDocumentIssue(DocumentIssueBody body, MultipartFile photo, String token) throws BadRequestException {
         validator.validateCitizenDocumentIssueData(body);
 
         UserModel citizenUserModel = userRepository.findByEmail(jwtService.extractUsername(token))
@@ -113,23 +115,25 @@ public class CitizenService {
         if (body.requestedDocument() == RequestedDocument.IDENTITY_CARD) {
             IdentityCardIssueRequest request = IdentityCardIssueRequest.builder()
                     .citizen(citizen)
-                    .photoURL(body.photoURl())
                     .citizenship(body.citizenship().toUpperCase())
                     .processed(false)
                     .approved(false)
                     .build();
 
             documentIssueRequestRepository.save(request);
+
+            filesystemService.storeRequest(request.getCitizen().getCitizenID(), request.getRequestID(), photo);
         } else {
             DriverLicenseIssueRequest request = DriverLicenseIssueRequest.builder()
                     .citizen(citizen)
-                    .photoURL(body.photoURl())
                     .categories(body.licenseCategory())
                     .processed(false)
                     .approved(false)
                     .build();
 
             documentIssueRequestRepository.save(request);
+
+            filesystemService.storeRequest(request.getCitizen().getCitizenID(), request.getRequestID(), photo);
         }
     }
 
@@ -139,7 +143,6 @@ public class CitizenService {
             dto.setDocumentID(dl.getDocumentID());
             dto.setIssueDate(dl.getIssueDate());
             dto.setExpirationDate(dl.getExpirationDate());
-            dto.setPhotoURL(dl.getPhotoURL());
             dto.setLost(dl.getLost());
             dto.setCategories(dl.getCategories().stream().sorted().toList());
             dto.setType("DRIVER_LICENSE");
@@ -149,7 +152,6 @@ public class CitizenService {
             dto.setDocumentID(ic.getDocumentID());
             dto.setIssueDate(ic.getIssueDate());
             dto.setExpirationDate(ic.getExpirationDate());
-            dto.setPhotoURL(ic.getPhotoURL());
             dto.setLost(ic.getLost());
             dto.setCitizenship(ic.getCitizenship());
             dto.setType("IDENTITY_CARD");

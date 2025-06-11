@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
-@Profile("dev")
+//@Profile("dev")
 public class MockDataConfig {
 
     private final PasswordEncoder passwordEncoder;
@@ -107,7 +106,6 @@ public class MockDataConfig {
                     .gender(Gender.MALE)
                     .build();
 
-//            citizenRepository.saveAll(Arrays.asList(citizen1, citizen2, citizen3));
             citizenRepository.save(citizen1);
             citizenRepository.save(citizen2);
             citizenRepository.save(citizen3);
@@ -122,7 +120,6 @@ public class MockDataConfig {
             // Create Identity Cards
             IdentityCard identityCard1 = IdentityCard.builder()
                     .citizen(managedCitizen1)
-                    .photoURL("https://example.com/photos/jan_kowalski.jpg")
                     .issueDate(LocalDate.of(2020, 3, 10))
                     .expirationDate(LocalDate.of(2030, 3, 10))
                     .issueAuthority(managedOfficial1)
@@ -132,7 +129,6 @@ public class MockDataConfig {
 
             IdentityCard identityCard2 = IdentityCard.builder()
                     .citizen(managedCitizen2)
-                    .photoURL("https://example.com/photos/maria_nowak.jpg")
                     .issueDate(LocalDate.of(2019, 7, 5))
                     .expirationDate(LocalDate.of(2029, 7, 5))
                     .issueAuthority(managedOfficial1)
@@ -147,7 +143,6 @@ public class MockDataConfig {
             // Create Driver Licenses
             DriverLicense driverLicense1 = DriverLicense.builder()
                     .citizen(managedCitizen1)
-                    .photoURL("https://example.com/photos/jan_kowalski_license.jpg")
                     .issueDate(LocalDate.of(2021, 6, 15))
                     .expirationDate(LocalDate.of(2036, 6, 15))
                     .issueAuthority(managedOfficial2)
@@ -157,7 +152,6 @@ public class MockDataConfig {
 
             DriverLicense driverLicense2 = DriverLicense.builder()
                     .citizen(managedCitizen3)
-                    .photoURL("https://example.com/photos/adam_wisniewski_license.jpg")
                     .issueDate(LocalDate.of(2018, 4, 20))
                     .expirationDate(LocalDate.of(2033, 4, 20))
                     .issueAuthority(managedOfficial2)
@@ -165,41 +159,34 @@ public class MockDataConfig {
                     .categories(Arrays.asList(LicenseCategory.B, LicenseCategory.C, LicenseCategory.D))
                     .build();
 
-//            documentRepository.saveAll(Arrays.asList(driverLicense1, driverLicense2));
             documentRepository.save(driverLicense1);
             documentRepository.save(driverLicense2);
 
             // Create Document Issue Requests
-            IdentityCardIssueRequest idCardRequest1 = IdentityCardIssueRequest.builder()
-                    .citizen(managedCitizen3)
-                    .processed(false)
-                    .photoURL("https://example.com/photos/adam_wisniewski_new.jpg")
-                    .approved(false)
-                    .citizenship("Polish")
-                    .build();
-
-            DriverLicenseIssueRequest driverLicenseRequest1 = DriverLicenseIssueRequest.builder()
-                    .citizen(managedCitizen2)
-                    .processed(true)
-                    .photoURL("https://example.com/photos/maria_nowak_license.jpg")
-                    .approved(true)
-                    .categories(Arrays.asList(LicenseCategory.B))
-                    .build();
-
-            DriverLicenseIssueRequest driverLicenseRequest2 = DriverLicenseIssueRequest.builder()
-                    .citizen(managedCitizen3)
-                    .processed(true)
-                    .photoURL("https://example.com/photos/adam_wisniewski_license_new.jpg")
-                    .approved(false) // Rejected request
-                    .categories(Arrays.asList(LicenseCategory.B, LicenseCategory.C, LicenseCategory.D))
-                    .build();
-
-//            documentIssueRequestRepository.saveAll(Arrays.asList(
-//                    idCardRequest1, driverLicenseRequest1, driverLicenseRequest2
-//            ));
-            documentIssueRequestRepository.save(idCardRequest1);
-            documentIssueRequestRepository.save(driverLicenseRequest1);
-            documentIssueRequestRepository.save(driverLicenseRequest2);
+//            IdentityCardIssueRequest idCardRequest1 = IdentityCardIssueRequest.builder()
+//                    .citizen(managedCitizen3)
+//                    .processed(false)
+//                    .approved(false)
+//                    .citizenship("Polish")
+//                    .build();
+//
+//            DriverLicenseIssueRequest driverLicenseRequest1 = DriverLicenseIssueRequest.builder()
+//                    .citizen(managedCitizen2)
+//                    .processed(true)
+//                    .approved(true)
+//                    .categories(Arrays.asList(LicenseCategory.B))
+//                    .build();
+//
+//            DriverLicenseIssueRequest driverLicenseRequest2 = DriverLicenseIssueRequest.builder()
+//                    .citizen(managedCitizen3)
+//                    .processed(true)
+//                    .approved(false) // Rejected request
+//                    .categories(Arrays.asList(LicenseCategory.B, LicenseCategory.C, LicenseCategory.D))
+//                    .build();
+//
+//            documentIssueRequestRepository.save(idCardRequest1);
+//            documentIssueRequestRepository.save(driverLicenseRequest1);
+//            documentIssueRequestRepository.save(driverLicenseRequest2);
 
             // Create Personal Data Update Requests
             PersonalDataUpdateRequest dataUpdateRequest1 = PersonalDataUpdateRequest.builder()

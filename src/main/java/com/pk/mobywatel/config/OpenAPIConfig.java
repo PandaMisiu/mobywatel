@@ -68,4 +68,22 @@ public class OpenAPIConfig {
                 })
                 .build();
     }
+
+    // Group for citizen APIs (requires JWT with CITIZEN role)
+    @Bean
+    public GroupedOpenApi citizenApi() {
+        return GroupedOpenApi.builder()
+                .group("citizen")
+                .pathsToMatch("/api/citizen/**")
+                .addOperationCustomizer((operation, handlerMethod) -> {
+                    operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                    if (operation.getDescription() == null) {
+                        operation.setDescription("Requires ROLE_CITIZEN");
+                    } else {
+                        operation.setDescription(operation.getDescription() + " (Requires ROLE_CITIZEN)");
+                    }
+                    return operation;
+                })
+                .build();
+    }
 }

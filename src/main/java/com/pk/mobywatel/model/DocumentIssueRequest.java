@@ -27,10 +27,6 @@ public class DocumentIssueRequest {
     @Column(nullable = false)
     private Boolean processed;
 
-    @Column(nullable = true)
-    @Convert(converter = EncryptionConverter.class)
-    private String photoURL;
-
     @Column(nullable = false)
     private Boolean approved;
 }
