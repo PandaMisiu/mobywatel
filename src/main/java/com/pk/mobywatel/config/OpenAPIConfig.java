@@ -38,13 +38,31 @@ public class OpenAPIConfig {
     public GroupedOpenApi officialApi() {
         return GroupedOpenApi.builder()
                 .group("official")
-                .pathsToMatch("/api/official/**")
+                .pathsToMatch("/api/citizen/**", "/api/photo/request/**")
                 .addOperationCustomizer((operation, handlerMethod) -> {
                     operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
                     if (operation.getDescription() == null) {
                         operation.setDescription("Requires ROLE_OFFICIAL or ROLE_ADMIN");
                     } else {
                         operation.setDescription(operation.getDescription() + " (Requires ROLE_OFFICIAL or ROLE_ADMIN)");
+                    }
+                    return operation;
+                })
+                .build();
+    }
+
+    // Group for citizen APIs (requires JWT with CITIZEN role)
+    @Bean
+    public GroupedOpenApi citizenApi() {
+        return GroupedOpenApi.builder()
+                .group("citizen")
+                .pathsToMatch("/api/citizen/**", "/api/photo/doc/**")
+                .addOperationCustomizer((operation, handlerMethod) -> {
+                    operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
+                    if (operation.getDescription() == null) {
+                        operation.setDescription("Requires ROLE_CITIZEN or ROLE_ADMIN");
+                    } else {
+                        operation.setDescription(operation.getDescription() + " (Requires ROLE_CITIZEN)");
                     }
                     return operation;
                 })
@@ -63,24 +81,6 @@ public class OpenAPIConfig {
                         operation.setDescription("Requires ROLE_ADMIN");
                     } else {
                         operation.setDescription(operation.getDescription() + " (Requires ROLE_ADMIN)");
-                    }
-                    return operation;
-                })
-                .build();
-    }
-
-    // Group for citizen APIs (requires JWT with CITIZEN role)
-    @Bean
-    public GroupedOpenApi citizenApi() {
-        return GroupedOpenApi.builder()
-                .group("citizen")
-                .pathsToMatch("/api/citizen/**")
-                .addOperationCustomizer((operation, handlerMethod) -> {
-                    operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
-                    if (operation.getDescription() == null) {
-                        operation.setDescription("Requires ROLE_CITIZEN");
-                    } else {
-                        operation.setDescription(operation.getDescription() + " (Requires ROLE_CITIZEN)");
                     }
                     return operation;
                 })

@@ -52,11 +52,7 @@ public class FilesystemService {
     public void moveRequestToDocs(Integer citizenID, Integer requestID, Integer docID) throws BadRequestException {
         try {
             Path rootPath = Paths.get(requestRoot.toString(), citizenID.toString());
-            System.out.println("Root path: " + rootPath);
-
             Path filePath = null;
-
-            System.out.println("Serching for request: " + citizenID + " to " + docID);
 
             for (Path document : Files.list(rootPath).toList()) {
                 if (document.getFileName().toString().startsWith(requestID.toString())) {
@@ -64,33 +60,23 @@ public class FilesystemService {
                 }
             }
 
-            System.out.println("Checking if document exists: " + filePath);
-
             if (filePath == null) {
                 throw new BadRequestException("File does not exist");
             }
 
             Resource resource = new UrlResource(filePath.toUri());
 
-            System.out.println("Checking if document exists: " + resource.getFile());
-
             if (!resource.exists() || !resource.isReadable())
                 throw new BadRequestException("File does not exist");
 
-            System.out.println("Creating new document file data");
-
             String extension = filePath.toString().substring(filePath.toString().lastIndexOf("."));
             Path destinationFile = Paths.get(docRoot.toString(), citizenID.toString(), docID.toString() + extension);
-
-            System.out.println("Creating parent directories");
 
             try {
                 Files.createDirectories(destinationFile.getParent());
             } catch (IOException e) {
                 throw new BadRequestException();
             }
-
-            System.out.println("Moving existing file");
 
             destinationFile = destinationFile.normalize().toAbsolutePath();
 

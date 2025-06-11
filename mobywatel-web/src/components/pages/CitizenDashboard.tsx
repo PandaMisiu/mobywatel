@@ -11,7 +11,6 @@ import {
   DocumentRequestModal,
   PersonalDataRequestModal,
   ReportLostModal,
-  type DocumentRequestData,
   type PersonalDataRequestData,
 } from '../molecules';
 import { API_BASE_URL } from '../../config/api';
@@ -117,15 +116,12 @@ export default function CitizenDashboard() {
     loadData();
   }, []);
 
-  const handleDocumentRequest = async (data: DocumentRequestData) => {
+  const handleDocumentRequest = async (data: FormData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/citizen/docs/request`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify(data),
+        body: data,
       });
 
       if (response.ok) {

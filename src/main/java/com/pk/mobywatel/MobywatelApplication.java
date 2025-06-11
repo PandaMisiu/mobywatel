@@ -27,6 +27,7 @@ public class MobywatelApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner(UserService userService, FilesystemService filesystemService) throws BadRequestException {
+        System.out.println("Admin Email: " + adminEmail);
         return runner -> {
             try{
                 filesystemService.init();

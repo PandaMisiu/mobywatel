@@ -13,6 +13,8 @@ services:
     volumes:
       - ./src/main/resources/application.properties:/app/application.properties
       - ./src/main/resources/wallet:/app/wallet
+      - ./documents:/app/documents
+      - ./document-requests:/app/document-requests
     restart: unless-stopped
     networks:
       - spring-network
