@@ -77,7 +77,7 @@ The API is documented using **Swagger UI**, which you can access when the applic
 ### Step 1: Log In to Set the JWT Cookie
 
 1. Open Swagger UI in your browser at
-   `http://localhost:8080/swagger-ui/index.html`.
+   `http://localhost/swagger-ui/index.html`.
 
 2. In the top right corner, open the **Select a definition** dropdown and choose the `public` group.
    This group contains endpoints that do **not** require authentication, including `/api/auth/login`.
@@ -101,7 +101,7 @@ The API is documented using **Swagger UI**, which you can access when the applic
    If successful, the API sets a cookie named `jwt` in your browser. This cookie contains your JWT token and will be used to authenticate requests to secured endpoints.
 
 **Tip:** You can verify the cookie in your browser via Developer Tools:
-`F12 → Application → Cookies → http://localhost:8080`
+`F12 → Application → Cookies → http://localhost`
 ![image](https://github.com/user-attachments/assets/5e2ed655-4ae3-40ee-944f-c1fa44c7b4ad)
 
 ---
@@ -118,135 +118,3 @@ The API defines two groups of secured endpoints:
   - **Path:** `/api/admin/**`
 
 With the `jwt` cookie in place, you can now interact with these secured endpoints through Swagger UI.
-
-## Endpoints
-
-### Login and Register
-
-- POST `api/auth/login`
-
-  - request body
-
-    ```json
-    {
-      "email": "string",
-      "password": "string"
-    }
-    ```
-
-    - the password should have at least 8 characters including: lowercase, uppercase, number and symbol
-
-  - response body
-
-    ```json
-    {
-      "success": "boolean",
-      "message": "string",
-      "userID": "int"
-    }
-    ```
-
-    - On success adds a `jwt` cookie
-
-- POST `api/auth/register`
-
-  - request body
-
-    ```json
-    {
-      "email": "string",
-      "password": "string",
-      "firstName": "string",
-      "lastName": "string",
-      "birthDate": "string",
-      "PESEL": "string",
-      "gender": "string"
-    }
-    ```
-
-    - Format of birthdate is `YYYY-MM-DD`, and gender is uppercase ("MALE"/"FEMALE")
-
-  - response body
-    ```json
-    {
-      "success": "boolean",
-      "message": "string"
-    }
-    ```
-
-### Admin Module
-
-- GET `api/admin/official?officialID=int`
-
-  - Gets official with specific ID
-  - Request has no JSON body
-  - response body
-    ```json
-    {
-      "officialID": "int",
-      "firstName": "string",
-      "lastName": "string",
-      "position": "string",
-      "email": "string"
-    }
-    ```
-
-- POST `api/admin/official`
-
-  - request body
-
-    ```json
-    {
-      "officialID": "int",
-      "email": "string",
-      "password": "string",
-      "firstName": "string",
-      "lastName": "string",
-      "position": "string"
-    }
-    ```
-
-    - Creates an Official account
-
-  - response body
-    ```json
-    {
-      "message": "string",
-      "successful": "boolean"
-    }
-    ```
-
-- PUT `api/admin/official`
-
-  - Updated Official account
-  - request body
-
-    ```json
-    {
-      "officialID": "int",
-      "email": "string",
-      "password": "string",
-      "firstName": "string",
-      "lastName": "string",
-      "position": "string"
-    }
-    ```
-
-  - response body
-    ```json
-    {
-      "message": "string",
-      "successful": "boolean"
-    }
-    ```
-
-- DELETE `api/admin/official?officialID=int`
-  - Deletes Official account with specific ID
-  - Request has no JSON body
-  - response body
-    ```json
-    {
-      "message": "string",
-      "successful": "boolean"
-    }
-    ```

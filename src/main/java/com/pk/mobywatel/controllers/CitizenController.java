@@ -44,7 +44,6 @@ public class CitizenController {
     public ResponseEntity<ApiResponse> requestDocumentIssue(@CookieValue(name = "jwt") String token,
                                                             @ModelAttribute DocumentIssueBody body,
                                                             @RequestParam MultipartFile photo) throws BadRequestException {
-        System.out.println(photo.getOriginalFilename());
         citizenService.requestDocumentIssue(body, photo, token);
         return ResponseEntity.ok(new ApiResponse(true, "Citizen document issue request report sent"));
     }

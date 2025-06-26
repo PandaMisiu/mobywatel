@@ -27,7 +27,7 @@ public class FilesystemService {
     }
 
     public void storeRequest(Integer citizenID, Integer requestID, MultipartFile file) throws BadRequestException {
-        if (file.isEmpty() || !file.getContentType().startsWith("image/")) {
+        if (file.isEmpty() || !file.getContentType().startsWith("image")) {
             throw new BadRequestException("Incorrect file");
         }
 
