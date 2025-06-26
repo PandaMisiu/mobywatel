@@ -13,6 +13,8 @@ Ensure the following are installed
 
 ### Installation and Preparation
 
+This is a setup development. For production version go to [Production Deployment Guide](PRODUCTION.md).
+
 1. **Clone the Repository**:
 
    ```bash
@@ -111,10 +113,12 @@ The API is documented using **Swagger UI**, which you can access when the applic
 The API defines two groups of secured endpoints:
 
 - **official** – Requires roles: `ROLE_OFFICIAL` or `ROLE_ADMIN`
-
   - **Path:** `/api/official/**`
 
 - **admin** – Requires role: `ROLE_ADMIN`
   - **Path:** `/api/admin/**`
+
+- **citizen** – Requires role: `ROLE_CITIZEN` or `ROLE_ADMIN`
+    - **Path:** `/api/citizen/**`
 
 With the `jwt` cookie in place, you can now interact with these secured endpoints through Swagger UI.
